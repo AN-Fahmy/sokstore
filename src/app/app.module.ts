@@ -99,7 +99,7 @@ import { ThemeCustomizerComponent } from './layouts/theme-customizer';
         FaqComponent,
     ],
 
-    providers: [Title, { provide: LocationStrategy, useClass: HashLocationStrategy }],
+    providers: [Title],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
