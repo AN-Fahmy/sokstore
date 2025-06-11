@@ -15,13 +15,15 @@ import { CoverPasswordResetComponent } from './cover-password-reset';
 import { CoverRegisterComponent } from './cover-register';
 
 const routes: Routes = [
+    { path: '', redirectTo:'auth/boxed-signin', pathMatch: "full" },
+    { path: 'auth/boxed-signin', component: BoxedSigninComponent, data: { title: 'Boxed Signin' } },
     { path: 'auth/boxed-lockscreen', component: BoxedLockscreenComponent, data: { title: 'Boxed Lockscreen' } },
     {
         path: 'auth/boxed-password-reset',
         component: BoxedPasswordResetComponent,
         data: { title: 'Boxed Password Reset' },
     },
-    { path: 'auth/boxed-signin', component: BoxedSigninComponent, data: { title: 'Boxed Signin' } },
+    // { path: 'auth/boxed-signin', component: BoxedSigninComponent, data: { title: 'Boxed Signin' } },
     { path: 'auth/boxed-signup', component: BoxedSignupComponent, data: { title: 'Boxed Signup' } },
     { path: 'auth/cover-lockscreen', component: CoverLockscreenComponent, data: { title: 'Cover Lockscreen' } },
     { path: 'auth/cover-login', component: CoverLoginComponent, data: { title: 'Cover Login' } },

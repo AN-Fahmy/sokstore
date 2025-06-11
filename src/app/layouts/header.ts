@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { toggleAnimation } from 'src/app/shared/animations';
 import { Store } from '@ngrx/store';
 import { Router, NavigationEnd } from '@angular/router';
@@ -12,6 +12,12 @@ import { TranslateService } from '@ngx-translate/core';
     animations: [toggleAnimation],
 })
 export class HeaderComponent {
+    signOut():void{
+        localStorage.removeItem('token'),
+        localStorage.removeItem('refreshToken')
+        this.router.navigate(['/auth/boxed-signin'])
+    }
+
     store: any;
     search = false;
     notifications = [

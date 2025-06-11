@@ -243,7 +243,7 @@ export class IndexComponent {
                             },
                             total: {
                                 show: true,
-                                label: 'Total',
+                                label: 'الإجمالي',
                                 color: '#888ea8',
                                 fontSize: '29px',
                                 formatter: (w: any) => {
@@ -256,7 +256,7 @@ export class IndexComponent {
                     },
                 },
             },
-            labels: ['Apparel', 'Sports', 'Others'],
+            labels: ['العطور', 'الإكسسورات', 'أخرى'],
             states: {
                 hover: {
                     filter: {

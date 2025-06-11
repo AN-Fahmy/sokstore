@@ -20,6 +20,7 @@ export class ThemeCustomizerComponent {
             .select((d) => d.index)
             .subscribe((d) => {
                 this.store = d;
+                console.log(d);
             });
     }
 

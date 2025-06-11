@@ -2,9 +2,9 @@
     <nav class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
         <div class="h-full bg-white dark:bg-[#0e1726]">
             <div class="flex items-center justify-between px-4 py-3">
-                <a routerLink="/" class="main-logo flex shrink-0 items-center">
+                <a routerLink="/sales-admin/" class="main-logo flex shrink-0 items-center">
                     <img class="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="" />
-                    <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">VRISTO</span>
+                    <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">Store</span>
                 </a>
                 <a
                     href="javascript:;"
@@ -27,7 +27,8 @@
                                 <icon-menu-dashboard class="shrink-0 group-hover:!text-primary" />
 
                                 <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
-                                    {{ 'dashboard' | translate }}
+                                    لوحة القيادة
+                                    <!-- {{ 'dashboard' | translate }} -->
                                 </span>
                             </div>
                             <div [ngClass]="{ 'rtl:rotate-90 -rotate-90': !activeDropdown.includes('dashboard') }">
@@ -37,11 +38,12 @@
                         <div [@slideDownUp]="!activeDropdown.includes('dashboard')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
                                 <li>
-                                    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMobileMenu()"
-                                        >{{ 'sales' | translate }}</a
-                                    >
+                                    <a routerLink="/sales-admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMobileMenu()">
+                                        <!-- {{ 'sales' | translate }} -->
+                                          المبيعات
+                                    </a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a routerLink="/analytics" routerLinkActive="active" (click)="toggleMobileMenu()">{{ 'analytics' | translate }}</a>
                                 </li>
                                 <li>
@@ -49,19 +51,80 @@
                                 </li>
                                 <li>
                                     <a routerLink="/crypto" routerLinkActive="active" (click)="toggleMobileMenu()">{{ 'crypto' | translate }}</a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </li>
 
                     <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                         <icon-minus class="hidden h-5 w-4 flex-none" />
-                        <span>{{ ('apps' | translate) || '&nbsp;' }}</span>
+                        <!-- <span>{{ ('apps' | translate) || '&nbsp;' }}</span> -->
+                        <span>التطبيقات</span>
                     </h2>
 
                     <li class="nav-item">
                         <ul>
                             <li class="nav-item">
+                                <a routerLink="/apps/sales-operation" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Sales Operations' | translate }} -->
+                                              عمليات البيع
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a routerLink="/apps/sales-return" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Sales Return' | translate }} -->
+                                            مرتجعات المبيعات
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a routerLink="/apps/purchases-operation" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Purchases Operations' | translate }} -->
+                                            عمليات الشراء
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a routerLink="/apps/purchases-return" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Purchases Return' | translate }} -->
+                                            مرتجعات المشتريات
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a routerLink="/apps/settings" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Settings' | translate }} -->
+                                            الإعدادات
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- <li class="nav-item">
                                 <a routerLink="/apps/chat" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
                                         <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
@@ -126,9 +189,9 @@
                                         >
                                     </div>
                                 </a>
-                            </li>
+                            </li> -->
 
-                            <li class="accordion menu nav-item">
+                            <!-- <li class="accordion menu nav-item">
                                 <button
                                     type="button"
                                     class="nav-link group w-full"
@@ -180,11 +243,11 @@
                                         >
                                     </div>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </li>
 
-                    <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                    <!-- <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                         <icon-minus class="hidden h-5 w-4 flex-none" />
                         <span>{{ ('user_interface' | translate) || '&nbsp;' }}</span>
                     </h2>
@@ -748,7 +811,7 @@
                                 >
                             </div>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </ng-scrollbar>
         </div>

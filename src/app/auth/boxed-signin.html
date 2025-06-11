@@ -13,8 +13,8 @@
         <div
             class="relative w-full max-w-[870px] rounded-md bg-[linear-gradient(45deg,#fff9f9_0%,rgba(255,255,255,0)_25%,rgba(255,255,255,0)_75%,_#fff9f9_100%)] p-2 dark:bg-[linear-gradient(52.22deg,#0E1726_0%,rgba(14,23,38,0)_18.66%,rgba(14,23,38,0)_51.04%,rgba(14,23,38,0)_80.07%,#0E1726_100%)]"
         >
-            <div class="relative flex flex-col justify-center rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg dark:bg-black/50 lg:min-h-[500px]">
-                <div class="absolute end-6 top-6">
+            <div class="relative flex flex-col justify-center rtl rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg dark:bg-black/50 lg:min-h-[500px]">
+                <!-- <div class="absolute end-6 top-6">
                     <div class="dropdown">
                         <div hlMenu>
                             <button
@@ -58,46 +58,46 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="mx-auto w-full max-w-[440px]">
                     <div class="mb-10">
-                        <h1 class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                        <p class="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                        <h1 class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">تسجيل الدخول</h1>
+                        <p class="text-base font-bold leading-normal text-white-dark">برجاء إدخال إسم المستخدم و كلمة المرور للدخول</p>
                     </div>
-                    <form class="space-y-5 dark:text-white" (submit)="router.navigate(['/'])">
+                    <form class="space-y-5 dark:text-white" [formGroup]="loginForm" (submit)="submitLogin()">
                         <div>
-                            <label for="Email">Email</label>
+                            <label for="userName">إسم المستخدم</label>
                             <div class="relative text-white-dark">
-                                <input id="Email" type="email" placeholder="Enter Email" class="form-input ps-10 placeholder:text-white-dark" />
+                                <input formControlName="userName" id="userName" type="text" placeholder="إسم المستخدم..." class="form-input ps-10 placeholder:text-white-dark" />
                                 <span class="absolute start-4 top-1/2 -translate-y-1/2">
                                     <icon-mail [fill]="true" />
                                 </span>
                             </div>
                         </div>
                         <div>
-                            <label for="Password">Password</label>
+                            <label for="Password">كلمة المرور</label>
                             <div class="relative text-white-dark">
-                                <input id="Password" type="password" placeholder="Enter Password" class="form-input ps-10 placeholder:text-white-dark" />
+                                <input formControlName="password" id="Password" type="password" placeholder="كلمة المرور..." class="form-input ps-10 placeholder:text-white-dark" />
                                 <span class="absolute start-4 top-1/2 -translate-y-1/2">
                                     <icon-lock-dots [fill]="true" />
                                 </span>
                             </div>
                         </div>
-                        <div>
+                        <!-- <div>
                             <label class="flex cursor-pointer items-center">
                                 <input type="checkbox" class="form-checkbox bg-white dark:bg-black" />
                                 <span class="text-white-dark">Subscribe to weekly newsletter</span>
                             </label>
-                        </div>
+                        </div> -->
                         <button type="submit" class="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                            Sign in
+                            تسجيل الدخول
                         </button>
                     </form>
-                    <div class="relative my-7 text-center md:mb-9">
+                    <!-- <div class="relative my-7 text-center md:mb-9">
                         <span class="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
                         <span class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
-                    </div>
-                    <div class="mb-10 md:mb-[60px]">
+                    </div> -->
+                    <!-- <div class="mb-10 md:mb-[60px]">
                         <ul class="flex justify-center gap-3.5 text-white">
                             <li>
                                 <a
@@ -136,13 +136,13 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
-                    <div class="text-center dark:text-white">
+                    </div> -->
+                    <!-- <div class="text-center dark:text-white">
                         Don't have an account ?
                         <a routerLink="/auth/boxed-signup" class="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                             SIGN UP
                         </a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

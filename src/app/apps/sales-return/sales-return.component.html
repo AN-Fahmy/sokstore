@@ -1,0 +1,106 @@
+<section>
+    <div class="panel mb-4">
+        <h1 class="text-[35px] mb-4">إرتجاع مبيعات</h1>
+        <div class="grid grid-cols-12 gap-3">
+            <div class="col-span-6">
+                <label>رقم الفاتورة</label>
+                <ng-select
+                    [items]="salesOperation"
+                    bindLabel="id"
+                    bindValue="id"
+                    [(ngModel)]="selectedInvoiceId"
+                    (change)="onInvoiceChange()"
+                    placeholder="اختر رقم الفاتورة"
+                >
+                </ng-select>
+            </div>
+            @if(selectedInvoice){
+                <div class="col-span-6">
+                    <!-- اختيار المنتج -->
+                    <label>اختر المنتج</label>
+                    <ng-select
+                        [items]="selectedInvoice.products"
+                        bindLabel="porductName"
+                        bindValue="productId"
+                        [(ngModel)]="selectedProductId"
+                        (change)="onProductChange()"
+                        placeholder="اختر المنتج"
+                    >
+                    </ng-select>
+                </div>
+            }
+
+            @if(selectedProduct){
+                <div class="col-span-12">
+                    <table class="table-auto border-collapse border border-gray-300 mb-3 w-full text-center">
+                        <thead>
+                            <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2">العميل</th>
+                            <th class="border border-gray-300 px-4 py-2">اسم المنتج</th>
+                            <th class="border border-gray-300 px-4 py-2">الكمية المتاحة</th>
+                            <th class="border border-gray-300 px-4 py-2">سعر البيع</th>
+                            <th class="border border-gray-300 px-4 py-2">الإجمالي (جنية)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngIf="selectedInvoice && selectedProduct">
+                            <td class="border border-gray-300 px-4 py-2">{{ selectedInvoice.clientName }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.porductName }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.quantity }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ (selectedProduct.totalAmount  / selectedProduct.quantity).toFixed(2)}} جنية</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.totalAmount }} جنية</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <label>الكمية المرتجعة</label>
+                    <input
+                        type="number"
+                        class="form-input"
+                        [(ngModel)]="returnQuantity"
+                        [max]="selectedProduct.quantity"
+                        min="1"
+                        placeholder="أدخل الكمية المرتجعة"
+                    />
+
+                    @if(returnQuantity > 0){
+                        <p>
+                            قيمة المرتجع: {{ calculateRefundAmount() }} جنية
+                        </p>
+                    }
+
+
+                    <button (click)="addReturn()" class="btn btn-primary mt-3">تسجيل المرتجع</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if(returnsHistory.length > 0){
+        <div class="panel">
+            <h2 class="text-[35px] mb-4">سجل المرتجعات</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>اسم المنتج</th>
+                        <th>الكمية المرتجعة</th>
+                        <th>قيمة المرتجع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (invoice of returnsHistory; track $index) {
+                        <tr>
+                            <td>{{ invoice.invoiceId }}</td>
+                            <td>{{ invoice.productName }}</td>
+                            <td>{{ invoice.returnQuantity }}</td>
+                            <td>{{ invoice.refundAmount }} جنية</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</section>

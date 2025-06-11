@@ -28,14 +28,27 @@ import { AuthLayout } from './layouts/auth-layout';
 // pages
 import { KnowledgeBaseComponent } from './pages/knowledge-base';
 import { FaqComponent } from './pages/faq';
+import { logedGuard } from 'src/guards/guards/loged/loged.guard';
+import { authGuard } from 'src/guards/guards/auth/auth.guard';
 
 export const routes: Routes = [
     {
         path: '',
+        component: AuthLayout,
+        // canActivate:[logedGuard],
+        children: [
+            // auth
+            { path: '', loadChildren: () => import('./auth/auth.module').then((d) => d.AuthModule) },
+        ],
+    },
+    {
+        path: '',
         component: AppLayout,
+        // canActivate:[authGuard],
         children: [
             // dashboard
-            { path: '', component: IndexComponent, data: { title: 'Sales Admin' } },
+            { path: '', redirectTo:'sales-admin', pathMatch:'full' },
+            { path: 'sales-admin', component: IndexComponent, data: { title: 'Sales Admin' } },
             { path: 'analytics', component: AnalyticsComponent, data: { title: 'Analytics Admin' } },
             { path: 'finance', component: FinanceComponent, data: { title: 'Finance Admin' } },
             { path: 'crypto', component: CryptoComponent, data: { title: 'Crypto Admin' } },

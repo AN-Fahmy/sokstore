@@ -1,0 +1,141 @@
+<section>
+    <div class="panel mb-5">
+        <h1 class="text-[35px] mb-5">إضافة منتج</h1>
+        <form class="grid grid-cols-12 gap-3 mb-3">
+            <div class="col-span-6">
+                <label for="inventory">المخزن</label>
+                <select class="form-select" name="inventory" id="inventory">
+                    <option value="" selected disabled>إختر المخزن</option>
+                    <option value="1">مخزن 1</option>
+                    <option value="2">مخزن 2</option>
+                </select>
+            </div>
+            <div class="col-span-6">
+                <label for="category">الفئة</label>
+                <select class="form-select" name="category" id="category">
+                    <option value="" selected disabled>إختر الفئة</option>
+                    <option value="1">عطور</option>
+                    <option value="2">اكسسورات</option>
+                </select>
+            </div>
+            <div class="col-span-6">
+                <label for="product">إسم المنتج</label>
+                <input class="form-input" type="text" name="product" id="product" placeholder="أدخل أسم المنتج...">
+            </div>
+            <div class="col-span-6">
+                <label for="measurement">وحدة المنتج</label>
+                <select class="form-select" name="measurement" id="measurement">
+                    <option value="" selected disabled>إختر وحدة المنتج</option>
+                    <option value="1">علبة</option>
+                    <option value="2">قطعة</option>
+                    <option value="3">مل</option>
+                    <option value="4">جرام</option>
+                </select>
+            </div>
+            <div class="col-span-12">
+                <label for="details">وصف المنتج</label>
+                <textarea class="form-input" name="details" id="details" placeholder="أدخل الوصف..."></textarea>
+            </div>
+            <div class="col-span-4">
+                <label for="purchase">سعر الشراء</label>
+                <input class="form-input" type="number" name="purchase" id="purchase" placeholder="أدخل سعر الشراء...">
+            </div>
+            <div class="col-span-4">
+                <label for="sale">سعر البيع</label>
+                <input class="form-input" type="number" name="sale" id="sale" placeholder="أدخل سعر البيع...">
+            </div>
+            <div class="col-span-4">
+                <label for="count">الكمية</label>
+                <input class="form-input" type="number" name="count" id="count" placeholder="أدخل الكمية...">
+            </div>
+            <div class="col-span-12">
+                <div class="flex justify-center items-center">
+                    <button class="btn btn-primary">حفظ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="panel">
+        <h1 class="text-[35px] mb-5">عرض المنتجات</h1>
+        <div class="mb-4 max-w-md">
+            <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="filterProducts()"
+                placeholder="ابحث..."
+                class="form-input w-full border rounded px-4 py-2"
+            />
+        </div>
+
+        <div class="overflow-auto">
+            <table class="min-w-full border border-gray-300 text-right">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('name')">
+                        اسم المنتج
+                        <span *ngIf="sortColumn === 'name'">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('purchasePrice')">
+                        سعر الشراء
+                        <span *ngIf="sortColumn === 'purchasePrice'">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('salePrice')">
+                        سعر البيع
+                        <span *ngIf="sortColumn === 'salePrice'">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('quantity')">
+                        الكمية
+                        <span *ngIf="sortColumn === 'quantity'">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                        </th>
+                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('supplierName')">
+                        اسم المورد
+                        <span *ngIf="sortColumn === 'supplierName'">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                        </th>
+                        <th class="px-4 py-2 border text-center">الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(product of filteredProducts; track $index){
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 border">{{ product.name }}</td>
+                            <td class="px-4 py-2 border">{{ product.purchasePrice }} جنية</td>
+                            <td class="px-4 py-2 border">{{ product.salePrice }} جنية</td>
+                            <td class="px-4 py-2 border">{{ product.quantity }}</td>
+                            <td class="px-4 py-2 border">{{ product.supplierName }}</td>
+                            <td class="px-4 py-2 border">
+                               <div class="flex justify-center items-center gap-3">
+                                    <button class="text-blue-600 hover:underline">
+                                        <i class="fa-solid fa-pen-to-square text-success"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:underline">
+                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                    </button>
+                               </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if(filteredProducts.length === 0){
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500">
+                            لا توجد منتجات مطابقة.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

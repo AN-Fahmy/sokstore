@@ -1,18 +1,18 @@
 <div>
     <ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
-            <a href="javascript:;" class="text-primary hover:underline">Dashboard</a>
+            <a href="javascript:;" class="text-primary hover:underline">لوحة القيادة</a>
         </li>
         <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-            <span>Sales</span>
+            <span>المبيعات</span>
         </li>
     </ul>
 
     <div class="pt-5">
-        <div class="mb-6 grid gap-6 xl:grid-cols-3">
+        <div class="mb-6 grid gap-6 xl:grid-cols-3 overflow-hidden">
             <div class="panel h-full xl:col-span-2">
                 <div class="mb-5 flex items-center justify-between dark:text-white-light">
-                    <h5 class="text-lg font-semibold">Revenue</h5>
+                    <h5 class="text-lg font-semibold">المبيعات الشهرية</h5>
                     <div class="dropdown ltr:ml-auto rtl:mr-auto">
                         <div hlMenu>
                             <a hlMenuButton href="javascript:;" class="align-middle">
@@ -20,19 +20,19 @@
                             </a>
                             <ul *hlMenuItems @toggleAnimation class="ltr:right-0 rtl:left-0">
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">Weekly</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">اسبوعي</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">Monthly</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">شهري</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">Yearly</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">سنوي</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <p class="text-lg dark:text-white-light/90">Total Profit <span class="ml-2 text-primary">$10,840</span></p>
+                <p class="text-lg dark:text-white-light/90">إجمالي المبيعات <span class="ml-2 text-primary">10,840 جنية</span></p>
                 <div class="relative overflow-hidden">
                     <apx-chart
                         [series]="revenueChart.series"
@@ -60,7 +60,7 @@
 
             <div class="panel h-full">
                 <div class="mb-5 flex items-center">
-                    <h5 class="text-lg font-semibold dark:text-white-light">Sales By Category</h5>
+                    <h5 class="text-lg font-semibold dark:text-white-light">المبيعات حسب الفئات</h5>
                 </div>
                 <div class="overflow-hidden">
                     <apx-chart
@@ -84,11 +84,11 @@
             </div>
         </div>
 
-        <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <!-- <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div class="panel h-full sm:col-span-2 xl:col-span-1">
                 <div class="mb-5 flex items-center">
                     <h5 class="text-lg font-semibold dark:text-white-light">
-                        Daily Sales <span class="block text-sm font-normal text-white-dark">Go to columns for details.</span>
+                        المبيعات اليومية
                     </h5>
                     <div class="relative ltr:ml-auto rtl:mr-auto">
                         <div class="grid h-11 w-11 place-content-center rounded-full bg-[#ffeccb] text-warning dark:bg-warning dark:text-[#ffeccb]">
@@ -112,7 +112,6 @@
                         [grid]="dailySales.grid"
                         class="rounded-lg bg-white dark:bg-black"
                     >
-                        <!-- loader -->
                         <div class="grid min-h-[175px] place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08]">
                             <span class="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-black !border-l-transparent dark:border-white"></span>
                         </div>
@@ -223,16 +222,16 @@
                         [tooltip]="totalOrders.tooltip"
                         class="rounded-lg bg-white dark:bg-black"
                     >
-                        <!-- loader -->
                         <div class="grid min-h-[290px] place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08]">
                             <span class="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-black !border-l-transparent dark:border-white"></span>
                         </div>
                     </apx-chart>
                 </div>
             </div>
-        </div>
 
-        <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        </div> -->
+
+        <!-- <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div class="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
                 <h5 class="mb-5 text-lg font-semibold dark:text-white-light">Recent Activities</h5>
 
@@ -744,6 +743,6 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

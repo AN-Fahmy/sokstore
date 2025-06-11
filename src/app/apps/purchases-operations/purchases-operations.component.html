@@ -1,0 +1,162 @@
+<section>
+    <div class="panel mb-5">
+        <h1 class="text-[35px] mb-5">عمليات الشراء</h1>
+        <form class="grid grid-cols-12 gap-3 mb-3" [formGroup]="salesOperationFrom" (ngSubmit)="submitSalesOperationForm()">
+            <div class="col-span-12">
+                <label for="client">إسم المورد</label>
+                <ng-select formControlName="clientId" [items]="salesOperation" bindLabel="clientName" bindValue="id" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
+            </div>
+
+
+            <div class="col-span-1">
+                <div class="h-full flex justify-start items-center mt-1">
+                    <button type="button" class="btn btn-sm btn-success" (click)="addProduct()">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-span-11" formArrayName="products">
+                <ng-container *ngFor="let product of products().controls; let i = index">
+                <div [formGroupName]="i">
+                    <div class="grid grid-cols-12 gap-3 mb-3">
+                        <div class="col-span-3">
+                            <label for="employeeName">إسم المنتج</label>
+                            <ng-select formControlName="porductId" [items]="options2" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
+                        </div>
+
+                        <div class="col-span-3">
+                            <label for="quantity">سعر الشراء</label>
+                            <input class="form-input" formControlName="salesAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                        </div>
+
+                        <div class="col-span-2">
+                            <label for="quantity">الكمية</label>
+                            <input class="form-input" formControlName="quantity" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                        </div>
+
+                        <div class="col-span-3">
+                            <label for="quantity">إجمالي المبلغ</label>
+                            <input class="form-input" formControlName="totalAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                        </div>
+
+                        <div class="col-span-1">
+                            <div class="h-full flex justify-center items-center mt-3">
+                                <button class="btn btn-sm btn-danger" (click)="removeProduct(i)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </ng-container>
+            </div>
+
+            <div class="col-span-12">
+                <label for="details">التفاصيل</label>
+                <textarea class="form-input" formControlName="details" name="details" id="details" placeholder="أدخل التفاصيل او الملاحظات..."></textarea>
+            </div>
+
+            <div class="col-span-12">
+                <div class="flex justify-center items-center">
+                    <button class="btn btn-primary">حفظ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel">
+        <h1 class="text-[35px] mb-5">عرض عمليات الشراء</h1>
+        <div class="mb-4 max-w-md">
+            <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="filterSalesOperations()"
+                placeholder="ابحث..."
+                class="form-input w-full border rounded px-4 py-2"
+            />
+        </div>
+
+        <div class="overflow-auto">
+            <table class="min-w-full bg-white border border-gray-300 text-right">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('clientName')">
+                            إسم المورد
+                            <span *ngIf="sortColumn === 'clientName'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('porductName')">
+                            المنتجات
+                            <span *ngIf="sortColumn === 'porductName'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('quantity')">
+                            الكمية
+                            <span *ngIf="sortColumn === 'quantity'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
+                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalAmount')">
+                            سعر الشراء
+                            <span *ngIf="sortColumn === 'totalAmount'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalAmount')">
+                            إجمالي المبلغ
+                            <span *ngIf="sortColumn === 'totalAmount'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
+                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('details')">
+                            التفاصيل
+                            <span *ngIf="sortColumn === 'details'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
+                        <!-- <th class="px-4 py-2 border">الإجراء</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(employee of filteredSalesOperations; track $index){
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 border">{{ employee.clientName }}</td>
+                            <td class="px-4 py-2 border">{{ employee.porductName }}</td>
+                            <td class="px-4 py-2 border">{{ employee.quantity }}</td>
+                            <td class="px-4 py-2 border">{{ (employee.totalAmount / employee.quantity).toFixed(2) }} جنية</td>
+                            <td class="px-4 py-2 border">{{ employee.totalAmount }} جنية</td>
+                            <td class="px-4 py-2 border">{{ employee.details }}</td>
+                            <!-- <td class="px-4 py-2 border">
+                            <button
+                                class="text-blue-600 hover:underline mr-2"
+                                (click)="onEdit(employee)"
+                            >
+                                تعديل
+                            </button>
+                            <button
+                                class="text-red-600 hover:underline"
+                                (click)="onDelete(employee.id)"
+                            >
+                                حذف
+                            </button>
+                            </td> -->
+                        </tr>
+                    }
+
+                    @if(filteredSalesOperations.length === 0){
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500">
+                            لا يوجد عملية بيع مطابقة.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
