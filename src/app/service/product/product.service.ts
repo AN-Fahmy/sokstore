@@ -13,7 +13,7 @@ export class ProductService {
         return this._HttpClient.get(`${environment.baseUrl}api/Product/GetAllProducts`)
     }
 
-    getProductById(id:string):Observable<any>{
+    getProductById(id:number):Observable<any>{
         return this._HttpClient.get(`${environment.baseUrl}api/Product/GetProductById/${id}`)
     }
 

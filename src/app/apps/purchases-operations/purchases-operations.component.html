@@ -4,7 +4,7 @@
         <form class="grid grid-cols-12 gap-3 mb-3" [formGroup]="salesOperationFrom" (ngSubmit)="submitSalesOperationForm()">
             <div class="col-span-12">
                 <label for="client">إسم المورد</label>
-                <ng-select formControlName="clientId" [items]="salesOperation" bindLabel="clientName" bindValue="id" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
+                <ng-select formControlName="clientId" [items]="allClients" bindLabel="fullName" bindValue="id" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
             </div>
 
 

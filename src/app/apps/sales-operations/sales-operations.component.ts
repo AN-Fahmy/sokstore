@@ -1,38 +1,88 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxCustomModalComponent } from 'ngx-custom-modal';
+import { ClientService } from 'src/app/service/client/client.service';
+import { ProductService } from 'src/app/service/product/product.service';
+import { SalesoperationService } from 'src/app/service/sales-operation/salesoperation.service';
+import Swal from 'sweetalert2';
 
 interface ISalesOperation {
-  id: number;
+  orderId: number;
   clientName: string;
-  porductName: string;
-  details: string;
-  quantity: number;
-  totalAmount: number;
+  totelAmount: number;
+  discount:number;
+  description: string;
+  productsName:any;
 }
 
 @Component({
   selector: 'app-sales-operations',
   standalone: true,
-  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor],
+  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent],
   templateUrl: './sales-operations.component.html',
-  styleUrl: './sales-operations.component.css'
+  styleUrl: './sales-operations.component.css',
 })
 export class SalesOperationsComponent implements OnInit{
     private readonly _FormBuilder = inject(FormBuilder)
-    salesOperation: ISalesOperation[] = [
-        { id: 1, clientName: 'محمد', porductName: 'عطر رجالي', quantity: 12, totalAmount: 1249, details:'اول عملية بيع'},
-        { id: 2, clientName: 'أحمد', porductName: 'اسوارة حريمي', quantity: 52, totalAmount: 320, details:'تاني عملية بيع'},
-    ];
+    private readonly _SalesoperationService = inject(SalesoperationService)
+    private readonly _ClientService = inject(ClientService)
+    private readonly _ProductService = inject(ProductService)
+
+    allSalesOperations:any[] = []
+    allClients:any[] = []
+    allProducts:any[] = []
+    saleOperationById:any = {}
 
     ngOnInit(): void {
+        this.getAllSalesOperations()
+        this.getAllClients()
+        this.getAllProducts()
         this.addProduct()
+        this.salesOperationFrom.get('discount')?.valueChanges.subscribe(() => {
+            this.calculateTotelAmount();
+        });
+    }
+
+    getAllSalesOperations():void{
+        this._SalesoperationService.getAllSalesOperations().subscribe({
+            next:(res)=>{
+                this.allSalesOperations = res.data
+                this.filteredSalesOperations = [...this.allSalesOperations]
+            }
+        })
+    }
+
+    getAllClients():void{
+        this._ClientService.getAllClients().subscribe({
+            next:(res)=>{
+                this.allClients = res.data
+            }
+        })
+    }
+
+    getAllProducts():void{
+        this._ProductService.getAllProducts().subscribe({
+            next:(res)=>{
+                this.allProducts = res.data
+            }
+        })
+    }
+
+    getProductById(id:number):void{
+        this._SalesoperationService.getSaleOperationById(id).subscribe({
+            next:(res)=>{
+                this.saleOperationById = res.data
+            }
+        })
     }
 
     salesOperationFrom:FormGroup = this._FormBuilder.group({
-        clientId: ['', Validators.required],
-        details: ['', Validators.required],
+        clientId:[null],
+        discount: [null],
+        description: [null],
+        totelAmount: [{ value: '', disabled: true }],
         products: this._FormBuilder.array([])
     })
 
@@ -41,40 +91,104 @@ export class SalesOperationsComponent implements OnInit{
     }
 
     addProduct(){
-        if(this.products().length < 5){
-            const product = this._FormBuilder.group({
-                porductId: ['', [Validators.required]],
-                salesAmount: ['', [Validators.required]],
-                quantity: ['', Validators.required],
-                totalAmount: ['', Validators.required],
-            })
-            this.products().push(product)
-        }
+        const product = this._FormBuilder.group({
+            productId: ['', Validators.required],
+            salesAmount: [{ value: '', disabled: true }, Validators.required],
+            quantity: ['', Validators.required],
+            totelAmount: [{ value: '', disabled: true }, Validators.required],
+        })
+        this.products().push(product)
+        this.watchProductChanges(this.products().length - 1);
+        this.calculateTotelAmount();
     }
 
     removeProduct(index:number){
         this.products().removeAt(index)
     }
 
-    submitSalesOperationForm():void{
-        console.log(this.salesOperationFrom.value);
+    watchProductChanges(index: number) {
+        const productGroup = this.products().at(index);
+        productGroup.get('productId')?.valueChanges.subscribe((productId: number) => {
+            if (productId) {
+            this._ProductService.getProductById(productId).subscribe({
+                next: (res) => {
+                const product = res.data;
+                productGroup.get('salesAmount')?.setValue(product.sellingPrice);
+
+                const qty = productGroup.get('quantity')?.value || 0;
+                productGroup.get('totelAmount')?.setValue(qty * product.sellingPrice);
+
+                this.calculateTotelAmount();
+                }
+            });
+            }
+        });
+
+        productGroup.get('quantity')?.valueChanges.subscribe((qty: number) => {
+            const price = productGroup.get('salesAmount')?.value || 0;
+            productGroup.get('totelAmount')?.setValue(qty * price);
+            this.calculateTotelAmount();
+        });
     }
 
-    filteredSalesOperations: ISalesOperation[] = [...this.salesOperation];
+    calculateTotelAmount() {
+        const productsArray = this.products();
+        let totalSum = 0;
+
+        productsArray.controls.forEach(product => {
+            const total = +product.get('totelAmount')?.value || 0;
+            totalSum += total;
+        });
+
+        const discount = +this.salesOperationFrom.get('discount')?.value || 0;
+
+        const totalAfterDiscount = totalSum - discount;
+
+        this.salesOperationFrom.get('totelAmount')?.setValue(totalAfterDiscount);
+    }
+
+    submitSalesOperationForm():void{
+        let data = this.salesOperationFrom.value
+
+        this._SalesoperationService.createSaleOperation(data).subscribe({
+            next:(res)=>{
+               Swal.fire({
+                    title: "تمت عملية البيع بنجاح",
+                    icon: "success",
+                })
+                this.salesOperationFrom.reset()
+                this.getAllSalesOperations()
+            },
+            error:(err)=>{
+                Swal.fire({
+                    title: err.error.errors[0],
+                    icon: "error",
+                })
+                this.getAllSalesOperations()
+            }
+        })
+    }
+
+    // salesOperation: ISalesOperation[] = [
+    //     { id: 1, clientName: 'محمد', porductName: 'عطر رجالي', quantity: 12, totelAmount: 1249, details:'اول عملية بيع'},
+    //     { id: 2, clientName: 'أحمد', porductName: 'اسوارة حريمي', quantity: 52, totelAmount: 320, details:'تاني عملية بيع'},
+    // ];
+
+
+    filteredSalesOperations: ISalesOperation[] = [...this.allSalesOperations];
     searchTerm: string = '';
     sortColumn: keyof ISalesOperation = 'clientName';
     sortDirection: 'asc' | 'desc' = 'asc';
 
     filterSalesOperations() {
         const term = this.searchTerm.trim().toLowerCase();
-
-        this.filteredSalesOperations = this.salesOperation.filter(supplier => {
+        this.filteredSalesOperations = this.allSalesOperations.filter(operation => {
             return (
-                supplier.clientName.toLowerCase().includes(term) ||
-                supplier.porductName.toString().includes(term) ||
-                supplier.quantity.toString().includes(term) ||
-                supplier.totalAmount.toString().includes(term) ||
-                supplier.details.toString().includes(term)
+                operation.clientName.toLowerCase().includes(term) ||
+                operation.totelAmount.toString().includes(term) ||
+                operation.description.toString().includes(term) ||
+                operation.discount.toString().includes(term)
+
             );
         });
 
@@ -107,18 +221,4 @@ export class SalesOperationsComponent implements OnInit{
             return 0;
         });
     }
-    // onEdit(product: ISalesOperation) {
-    //     console.log('تعديل الموظف:', product);
-    // }
-    // onDelete(id: number) {
-    //     if (confirm('هل أنت متأكد من الحذف؟')) {
-    //         this.salesOperation = this.salesOperation.filter(p => p.id !== id);
-    //         this.filterSalesOperations();
-    //     }
-    // }
-
-    options1 = ['إسلام', 'محمود', 'عماد'];
-    options2= ['منتج 1', 'منتج 2', 'منتج 3'];
-    input1 = [];
-    input2 = [];
 }

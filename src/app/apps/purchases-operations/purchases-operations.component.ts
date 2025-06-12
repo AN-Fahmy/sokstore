@@ -2,6 +2,8 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ClientService } from 'src/app/service/client/client.service';
+import { SalesoperationService } from 'src/app/service/sales-operation/salesoperation.service';
 
 interface ISalesOperation {
   id: number;
@@ -21,20 +23,47 @@ interface ISalesOperation {
   styleUrl: './purchases-operations.component.css'
 })
 export class PurchasesOperationsComponent {
- private readonly _FormBuilder = inject(FormBuilder)
+    private readonly _FormBuilder = inject(FormBuilder)
+    private readonly _SalesoperationService = inject(SalesoperationService)
+    private readonly _ClientService = inject(ClientService)
+
+    allSalesOperations:any[] = []
+    allClients:any[] = []
+    operationId:string = ''
+    
     salesOperation: ISalesOperation[] = [
         { id: 1, clientName: 'محمد', porductName: 'عطر رجالي', quantity: 12, totalAmount: 1249, details:'اول عملية بيع'},
         { id: 2, clientName: 'أحمد', porductName: 'اسوارة حريمي', quantity: 52, totalAmount: 320, details:'تاني عملية بيع'},
     ];
 
     ngOnInit(): void {
+        this.getAllSalesOperations()
         this.addProduct()
     }
 
+    getAllSalesOperations():void{
+        this._SalesoperationService.getAllSalesOperations().subscribe({
+            next:(res)=>{
+                this.allSalesOperations = res.data
+            }
+        })
+    }
+
+    getAllClients():void{
+        this._ClientService.getAllClients().subscribe({
+            next:(res)=>{
+                this.allClients = res.data
+            }
+        })
+    }
+
     salesOperationFrom:FormGroup = this._FormBuilder.group({
-        clientId: ['', Validators.required],
-        details: ['', Validators.required],
-        products: this._FormBuilder.array([])
+        clientId:[''],
+        sale:[''],
+        totalOrder:[''],
+        totalAmount:[''],
+        totalAfterSale:[''],
+        productsDetails: this._FormBuilder.array([])
     })
 
     products():FormArray{
@@ -60,6 +89,10 @@ export class PurchasesOperationsComponent {
     submitSalesOperationForm():void{
         console.log(this.salesOperationFrom.value);
     }
+
+
+
+
 
     filteredSalesOperations: ISalesOperation[] = [...this.salesOperation];
     searchTerm: string = '';
