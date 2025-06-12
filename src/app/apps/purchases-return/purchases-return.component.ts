@@ -3,42 +3,43 @@ import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
-interface ISaleProduct {
+interface IPurchaseProduct {
   productId: number;
   porductName: string;
   quantity: number;
-  totalAmount: number; // سعر الكمية كلها للمنتج هذا
+  totalAmount: number;
 }
 
-interface ISalesOperation {
+interface IPurchasesReturn {
   id: number;
-  clientName: string;
-  products: ISaleProduct[];
+  supplierName: string;
+  products: IPurchaseProduct[];
   details: string;
 }
 
+
 @Component({
-  selector: 'app-sales-return',
+  selector: 'app-purchases-return',
   standalone: true,
   imports: [NgSelectModule, ReactiveFormsModule, FormsModule, NgIf],
-  templateUrl: './sales-return.component.html',
-  styleUrl: './sales-return.component.css'
+  templateUrl: './purchases-return.component.html',
+  styleUrl: './purchases-return.component.css'
 })
-export class SalesReturnComponent {
+export class PurchasesReturnComponent {
     selectedInvoiceId!: number;
-    selectedInvoice?: ISalesOperation;
+    selectedInvoice?: IPurchasesReturn;
 
     selectedProductId!: number;
-    selectedProduct?: ISaleProduct;
+    selectedProduct?: IPurchaseProduct;
 
     returnQuantity: number = 0;
 
-    returnsHistory: any[] = []; // لتخزين المرتجعات
+    returnsHistory: any[] = [];
 
-    salesOperation: ISalesOperation[] = [
+    allPurchasesReturn: IPurchasesReturn[] = [
         {
             id: 1,
-            clientName: 'محمد',
+            supplierName: 'محمد',
             products: [
                 { productId: 101, porductName: 'عطر رجالي', quantity: 12, totalAmount: 1249 },
                 { productId: 102, porductName: 'عطر نسائي', quantity: 5, totalAmount: 500 }
@@ -47,7 +48,7 @@ export class SalesReturnComponent {
         },
         {
             id: 2,
-            clientName: 'أحمد',
+            supplierName: 'أحمد',
             products: [
             { productId: 201, porductName: 'اسوارة حريمي', quantity: 52, totalAmount: 320 }
             ],
@@ -56,7 +57,7 @@ export class SalesReturnComponent {
     ];
 
     onInvoiceChange() {
-        this.selectedInvoice = this.salesOperation.find(inv => inv.id === this.selectedInvoiceId);
+        this.selectedInvoice = this.allPurchasesReturn.find(inv => inv.id === this.selectedInvoiceId);
         this.selectedProduct = undefined;
         this.selectedProductId = 0;
         this.returnQuantity = 0;
@@ -102,6 +103,4 @@ export class SalesReturnComponent {
         this.selectedProductId = 0;
         this.returnQuantity = 0;
     }
-
-
 }

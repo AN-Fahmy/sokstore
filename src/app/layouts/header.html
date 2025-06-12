@@ -4,7 +4,7 @@
             <a routerLink="/sales-admin/" class="main-logo flex shrink-0 items-center">
                 <img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.svg" alt="" />
                 <span class="hidden align-middle text-2xl font-semibold transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5">
-                    Store
+                    Sok Store
                 </span>
             </a>
 
@@ -263,7 +263,8 @@
             <div class="dropdown shrink-0">
                 <div hlMenu class="!block">
                     <button type="button" hlMenuButton class="group relative block">
-                        <img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="/assets/images/user-profile.jpeg" alt="" />
+                        <span class="p-3 rounded-full font-[600] transition-all bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">{{fullName?.slice(0, 2)?.toUpperCase()}}</span>
+                        <!-- <img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="/assets/images/user-profile.jpeg" alt="" /> -->
                     </button>
                     <ul
                         *hlMenuItems
@@ -273,11 +274,12 @@
                         <li>
                             <div class="flex items-center px-4 py-4">
                                 <div class="flex-none">
-                                    <img class="h-10 w-10 rounded-md object-cover" src="/assets/images/user-profile.jpeg" alt="" />
+                                    <span class="p-3 rounded-full font-[] transition-all bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">{{fullName?.slice(0, 2)?.toUpperCase()}}</span>
+                                    <!-- <img class="h-10 w-10 rounded-md object-cover" src="/assets/images/user-profile.jpeg" alt="" /> -->
                                 </div>
                                 <div class="truncate ltr:pl-4 rtl:pr-4">
                                     <h4 class="text-base">
-                                        John Doe<span class="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span>
+                                        {{fullName}}<span class="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">{{role == 'Admin' ? 'Pro'.toUpperCase() : 'Emp'.toUpperCase()}}</span>
                                     </h4>
                                     <!-- <a class="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white" href="javascript:;">
                                         {{"johndoe@gmail.com"}}
@@ -306,10 +308,10 @@
                                 Lock Screen
                             </a>
                         </li> -->
-                        <li class="border-t border-white-light dark:border-white-light/10">
+                        <li class="border-t border-white-light dark:border-white-light/10 cursor-pointer">
                             <a (click)="signOut()" *hlMenuItem="let menuItem" class="!py-3 text-danger">
                                 <icon-logout class="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" />
-                                Sign Out
+                                تسجيل الخروج
                             </a>
                         </li>
                     </ul>

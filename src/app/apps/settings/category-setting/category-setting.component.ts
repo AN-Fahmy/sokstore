@@ -1,6 +1,8 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CategoryService } from 'src/app/service/category/category.service';
+import Swal from 'sweetalert2';
 
 interface Category {
   id: number;
@@ -10,11 +12,90 @@ interface Category {
 @Component({
   selector: 'app-category-setting',
   standalone: true,
-  imports: [NgClass, NgIf, FormsModule],
+  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule],
   templateUrl: './category-setting.component.html',
   styleUrl: './category-setting.component.css'
 })
 export class CategorySettingComponent {
+    private readonly _FormBuilder = inject(FormBuilder)
+    private readonly _CategoryService = inject(CategoryService)
+
+    allCategories:any[] = []
+    categoryId:string = ''
+    update:boolean = false
+    ngOnInit(): void {
+        this.getAllCategory()
+    }
+
+    getAllCategory():void{
+        this._CategoryService.getAllCategory().subscribe({
+            next:(res)=>{
+                this.allCategories = res.data
+                this.filteredCategories = [...this.allCategories]
+            }
+        })
+    }
+
+    categoryForm:FormGroup = this._FormBuilder.group({
+        name:['']
+    })
+
+    submitCategoryForm():void{
+        let data = this.categoryForm.value
+        this._CategoryService.createCategory(data).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم إضافة فئة بنجاح",
+                    icon: "success",
+                })
+                this.categoryForm.reset()
+                this.getAllCategory()
+            }
+        })
+    }
+
+    deleteCategory(id:number):void{
+        this._CategoryService.deleteCategory(id).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم حذف الفئة بنجاح",
+                    icon: "success",
+                })
+                this.getAllCategory()
+            }
+        })
+    }
+
+    pathCategoryData(category:any):void{
+        this.categoryId = category.id
+        this.categoryForm.patchValue(category)
+        this.update = true
+    }
+
+    updateCategory():void{
+        let data = this.categoryForm.value
+        data.id = this.categoryId
+
+        this._CategoryService.updateCategory(this.categoryId, data).subscribe({
+            next:(res)=>{
+                this.update = false
+                Swal.fire({
+                    title: "تم تعديل الفئة بنجاح",
+                    icon: "success",
+                })
+                this.categoryForm.reset()
+                this.getAllCategory()
+            }
+        })
+    }
+
+
+
+
+
+
+
+
     categories: Category[] = [
         { id: 1, name: 'عطور' },
         { id: 2, name: 'إكسسوارات' },

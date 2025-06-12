@@ -12,9 +12,15 @@ import { TranslateService } from '@ngx-translate/core';
     animations: [toggleAnimation],
 })
 export class HeaderComponent {
+
+    fullName:string | null = localStorage.getItem('fullName')
+    role:string | null = localStorage.getItem('role')
     signOut():void{
         localStorage.removeItem('token'),
-        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('refreshToken'),
+        localStorage.removeItem('role'),
+        localStorage.removeItem('userId'),
+        localStorage.removeItem('fullName'),
         this.router.navigate(['/auth/boxed-signin'])
     }
 

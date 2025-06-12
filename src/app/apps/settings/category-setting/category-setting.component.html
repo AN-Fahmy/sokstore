@@ -1,11 +1,15 @@
 <section>
     <div class="panel mb-4">
         <h1 class="text-[35px] mb-5">إضافة فئة جديدة</h1>
-        <form class="mb-4">
+        <form class="mb-4" [formGroup]="categoryForm" (ngSubmit)="submitCategoryForm()">
             <label for="categoryName">اسم الفئة</label>
-            <input name="categoryName" type="text" class="form-input mb-3" placeholder="أدخل الفئة...">
+            <input formControlName="name" name="categoryName" type="text" class="form-input mb-3" placeholder="أدخل الفئة...">
             <div class="flex justify-center items-center">
-                <button class="btn btn-primary">حفظ</button>
+                @if(!update){
+                        <button class="btn btn-primary">حفظ</button>
+                    } @else {
+                        <button class="btn btn-success" type="button" (click)="updateCategory()">تعديل</button>
+                    }
             </div>
         </form>
     </div>
@@ -27,7 +31,7 @@
             <table class="min-w-full border border-gray-300 text-right">
                 <thead class="bg-gray-100">
                 <tr>
-                    <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('id')">
+                    <th class="px-4 py-2 border cursor-pointer">
                     رقم الفئة
                     <span
                         class="ml-1 text-xs"
@@ -36,7 +40,7 @@
                         'text-black': sortColumn === 'id'
                         }"
                     >
-                        {{ sortColumn === 'id' ? (sortDirection === 'asc' ? '▲' : '▼') : '▲' }}
+                        <!-- {{ sortColumn === 'id' ? (sortDirection === 'asc' ? '▲' : '▼') : '▲' }} -->
                     </span>
                     </th>
                     <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('name')">
@@ -57,15 +61,15 @@
                 <tbody>
                     @for (category of filteredCategories; track $index) {
                          <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-2 border">{{ category.id }}</td>
+                            <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 border">{{ category.name }}</td>
                             <td class="px-4 py-2 border">
                                <div class="flex justify-center items-center gap-3">
                                     <button class="text-blue-600 hover:underline">
-                                        <i class="fa-solid fa-pen-to-square text-success"></i>
+                                        <i class="fa-solid fa-pen-to-square text-success" (click)="pathCategoryData(category)"></i>
                                     </button>
                                     <button class="text-red-600 hover:underline">
-                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                        <i class="fa-solid fa-trash-can text-danger" (click)="deleteCategory(category.id)"></i>
                                     </button>
                                </div>
                             </td>

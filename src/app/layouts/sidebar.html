@@ -4,7 +4,7 @@
             <div class="flex items-center justify-between px-4 py-3">
                 <a routerLink="/sales-admin/" class="main-logo flex shrink-0 items-center">
                     <img class="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="" />
-                    <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">Store</span>
+                    <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">Sok Store</span>
                 </a>
                 <a
                     href="javascript:;"
@@ -40,7 +40,7 @@
                                 <li>
                                     <a routerLink="/sales-admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMobileMenu()">
                                         <!-- {{ 'sales' | translate }} -->
-                                          المبيعات
+                                        إحصائيات المبيعات
                                     </a>
                                 </li>
                                 <!-- <li>
@@ -67,11 +67,11 @@
                             <li class="nav-item">
                                 <a routerLink="/apps/sales-operation" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
-                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
-
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-coins text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Sales Operations' | translate }} -->
-                                              عمليات البيع
+                                              المبيعات
                                         </span>
                                     </div>
                                 </a>
@@ -79,8 +79,8 @@
                             <li class="nav-item">
                                 <a routerLink="/apps/sales-return" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
-                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
-
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-arrow-right-arrow-left text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Sales Return' | translate }} -->
                                             مرتجعات المبيعات
@@ -91,11 +91,11 @@
                             <li class="nav-item">
                                 <a routerLink="/apps/purchases-operation" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
-                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
-
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-cart-shopping text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Purchases Operations' | translate }} -->
-                                            عمليات الشراء
+                                            المشتريات
                                         </span>
                                     </div>
                                 </a>
@@ -103,7 +103,8 @@
                             <li class="nav-item">
                                 <a routerLink="/apps/purchases-return" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
-                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-arrow-right-arrow-left text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
 
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Purchases Return' | translate }} -->
@@ -115,8 +116,8 @@
                             <li class="nav-item">
                                 <a routerLink="/apps/settings" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">
-                                        <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
-
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-gear shrink-0 text-gray-500 text-[18px] group-hover:!text-primary"></i>
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Settings' | translate }} -->
                                             الإعدادات

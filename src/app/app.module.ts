@@ -3,7 +3,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpBackend, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 //Routes
@@ -59,6 +59,7 @@ import { HeaderComponent } from './layouts/header';
 import { FooterComponent } from './layouts/footer';
 import { SidebarComponent } from './layouts/sidebar';
 import { ThemeCustomizerComponent } from './layouts/theme-customizer';
+import { headerInterceptor } from './interceptors/header/header.interceptor';
 
 @NgModule({
     imports: [
@@ -99,7 +100,10 @@ import { ThemeCustomizerComponent } from './layouts/theme-customizer';
         FaqComponent,
     ],
 
-    providers: [Title],
+    providers: [
+        Title,
+        provideHttpClient(withInterceptors([headerInterceptor]))
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

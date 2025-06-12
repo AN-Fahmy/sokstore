@@ -1,29 +1,34 @@
 <section>
     <div class="panel mb-4">
         <h1 class="text-[35px] mb-5">إضافة مخزن</h1>
-        <form class="grid grid-cols-12 gap-3 mb-3">
+        <form class="grid grid-cols-12 gap-3 mb-3" [formGroup]="inventoryForm" (ngSubmit)="submitinventoryForm()">
             <div class="col-span-6  ">
                 <label for="inventory">إسم المخزن</label>
-                <input class="form-input" type="text" name="inventory" id="inventory" placeholder="أدخل أسم المخزن...">
+                <input formControlName="name" class="form-input" type="text" name="inventory" id="inventory" placeholder="أدخل أسم المخزن...">
             </div>
 
             <div class="col-span-6  ">
-                <label for="employee">إسم المسئول عن المخزن</label>
-                <select class="form-select" name="employee" id="employee">
+                <label for="user">إسم المسئول عن المخزن</label>
+                <select formControlName="userId" class="form-select" name="user" id="user" (change)="selectEmployeeId($event)">
                     <option value="" selected disabled>إختر الموظف</option>
-                    <option value="1">إسلام</option>
-                    <option value="2">محمود</option>
+                    @for(user of allUsers; track $index){
+                        <option [value]="user.id">{{user.fullName}}</option>
+                    }
                 </select>
             </div>
 
             <div class="col-span-12">
                 <label for="address">العنوان</label>
-                <input class="form-input" type="text" name="address" id="address" placeholder="أدخل العنوان...">
+                <input formControlName="address" class="form-input" type="text" name="address" id="address" placeholder="أدخل العنوان...">
             </div>
 
             <div class="col-span-12">
                 <div class="flex justify-center items-center">
-                    <button class="btn btn-primary">حفظ</button>
+                    @if(!update){
+                        <button class="btn btn-primary">حفظ</button>
+                    } @else {
+                        <button class="btn btn-success" type="button" (click)="updateInventory()">تعديل</button>
+                    }
                 </div>
             </div>
         </form>
@@ -64,9 +69,9 @@
                             {{ sortDirection === 'asc' ? '▲' : '▼' }}
                         </span>
                         </th>
-                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('employeeName')">
+                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('userName')">
                         الموظف المسئول
-                        <span *ngIf="sortColumn === 'employeeName'">
+                        <span *ngIf="sortColumn === 'userName'">
                             {{ sortDirection === 'asc' ? '▲' : '▼' }}
                         </span>
                         </th>
@@ -78,14 +83,14 @@
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-2 border">{{ inventory.name }}</td>
                             <td class="px-4 py-2 border">{{ inventory.address }}</td>
-                            <td class="px-4 py-2 border">{{ inventory.employeeName }}</td>
+                            <td class="px-4 py-2 border">{{ inventory.userName }}</td>
                             <td class="px-4 py-2 border">
                                <div class="flex justify-center items-center gap-3">
                                     <button class="text-blue-600 hover:underline">
-                                        <i class="fa-solid fa-pen-to-square text-success"></i>
+                                        <i class="fa-solid fa-pen-to-square text-success" (click)="pathInventoryData(inventory)"></i>
                                     </button>
                                     <button class="text-red-600 hover:underline">
-                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                        <i class="fa-solid fa-trash-can text-danger" (click)="deleteInventory(inventory.id)"></i>
                                     </button>
                                </div>
                             </td>

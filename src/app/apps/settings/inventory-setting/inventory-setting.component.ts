@@ -1,11 +1,14 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InventoryService } from 'src/app/service/inventory/inventory.service';
+import { UsersService } from 'src/app/service/users/users.service';
+import Swal from 'sweetalert2';
 
 interface Iinventory {
   id: number;
   name: string;
-  employeeName: string;
+  userName: string;
   address: string;
   phone: number;
 }
@@ -14,17 +17,103 @@ interface Iinventory {
 @Component({
   selector: 'app-inventory-setting',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, ReactiveFormsModule],
   templateUrl: './inventory-setting.component.html',
   styleUrl: './inventory-setting.component.css'
 })
-export class InventorySettingComponent {
-    inventories: Iinventory[] = [
-        { id: 1, name: 'عطر رجالي', address: 'شارع التحرير',employeeName:'إسلام', phone: 0o1247362751},
-        { id: 2, name: 'إسوارة نسائية', address: 'شارع السلام الجديد',employeeName:'محمود', phone: 0o1247523416},
-    ];
+export class InventorySettingComponent implements OnInit{
+        private readonly _FormBuilder = inject(FormBuilder)
+        private readonly _InventoryService = inject(InventoryService)
+        private readonly _UsersService = inject(UsersService)
 
-    filteredInventories: Iinventory[] = [...this.inventories];
+        allInventories:any[] = []
+        allUsers:any[] = []
+        inventoryId:string = ''
+        employeeId:string = ''
+        update:boolean = false
+
+        ngOnInit(): void {
+            this.getAllInventories()
+            this.getAllUsers()
+        }
+        getAllUsers():void{
+            this._UsersService.getAllEmployeeAndAdmin().subscribe({
+                next:(res)=>{
+                    this.allUsers = res.data
+                }
+            })
+        }
+
+        getAllInventories():void{
+            this._InventoryService.getAllWarehouses().subscribe({
+                next:(res)=>{
+                    this.allInventories = res.data
+                    this.filteredInventories = [...this.allInventories]
+                }
+            })
+        }
+
+        selectEmployeeId(event:Event){
+            let selectId = (event.target as HTMLSelectElement).value
+            this.employeeId = selectId
+        }
+
+        inventoryForm:FormGroup = this._FormBuilder.group({
+            name: [''],
+            userId: [''],
+            address: [''],
+        })
+
+        submitinventoryForm():void{
+            let data = this.inventoryForm.value
+            this._InventoryService.createWarehouse(data).subscribe({
+                next:(res)=>{
+                    Swal.fire({
+                        title: "تم إضافة مخزن بنجاح",
+                        icon: "success",
+                    })
+                    this.inventoryForm.reset()
+                    this.getAllInventories()
+                }
+            })
+        }
+
+        deleteInventory(id:number):void{
+            this._InventoryService.deleteWarehouse(id).subscribe({
+                next:(res)=>{
+                    Swal.fire({
+                        title: "تم حذف المخزن بنجاح",
+                        icon: "success",
+                    })
+                    this.getAllInventories()
+                }
+            })
+        }
+
+        pathInventoryData(inventory:any):void{
+            this.inventoryId = inventory.id
+            this.inventoryForm.patchValue(inventory)
+            this.update = true
+        }
+
+        updateInventory():void{
+            let data = this.inventoryForm.value
+            data.id = this.inventoryId
+            data.userId = this.employeeId
+            this._InventoryService.updateWarehouse(this.inventoryId, data).subscribe({
+                next:(res)=>{
+                    this.update = false
+                    Swal.fire({
+                        title: "تم تعديل المخزن بنجاح",
+                        icon: "success",
+                    })
+                    this.inventoryForm.reset()
+                    this.getAllInventories()
+                }
+            })
+        }
+
+    filteredInventories: Iinventory[] = [...this.allInventories];
     searchTerm: string = '';
     sortColumn: keyof Iinventory = 'name';
     sortDirection: 'asc' | 'desc' = 'asc';
@@ -32,12 +121,11 @@ export class InventorySettingComponent {
     filterInventories() {
         const term = this.searchTerm.trim().toLowerCase();
 
-        this.filteredInventories = this.inventories.filter(inventory => {
+        this.filteredInventories = this.allInventories.filter(inventory => {
             return (
                 inventory.name.toLowerCase().includes(term) ||
                 inventory.address.toString().includes(term) ||
-                inventory.employeeName.toString().includes(term) ||
-                inventory.phone.toString().includes(term)
+                inventory.userName.toString().includes(term)
             );
         });
 
@@ -78,7 +166,7 @@ export class InventorySettingComponent {
 
     onDelete(id: number) {
         if (confirm('هل أنت متأكد من الحذف؟')) {
-            this.inventories = this.inventories.filter(p => p.id !== id);
+            this.allInventories = this.allInventories.filter(p => p.id !== id);
             this.filterInventories();
         }
     }

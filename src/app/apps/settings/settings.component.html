@@ -1,44 +1,82 @@
 
-<div class="grid grid-cols-3 gap-3">
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/supplier-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
-            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/supplier-icon.png" alt="" />
-            <h2 class="text-2xl">الموردين</h2>
+<div [class]="role === 'Admin' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2'" class="grid gap-3">
+    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/sales-operation/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
+            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/sales-icon.png" alt="" />
+            <h2 class="text-2xl">المبيعات</h2>
         </div>
     </div>
 
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/client-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
-            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/client-icon.png" alt="" />
-            <h2 class="text-2xl">العملاء</h2>
+    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-operation/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
+            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/purchase-icon.png" alt="" />
+            <h2 class="text-2xl">المشتريات</h2>
         </div>
     </div>
 
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/employee-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
-            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/employee-icon.png" alt="" />
-            <h2 class="text-2xl">الموظفين</h2>
+    @if(role === 'Admin'){
+        <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/sales-return/']">
+            <div class="flex flex-col items-center justify-center gap-2 text-center">
+                <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/sales-return-icon.png" alt="" />
+                <h2 class="text-2xl">مرتجعات المبيعات</h2>
+            </div>
         </div>
-    </div>
 
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/inventory-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
+        <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-return/']">
+            <div class="flex flex-col items-center justify-center gap-2 text-center">
+                <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/purchase-return-icon.png" alt="" />
+                <h2 class="text-2xl">مرتجعات المشتريات</h2>
+            </div>
+        </div>
+        }
+</div>
+
+<div class="grid md:grid-cols-3 grid-cols-2 gap-3 my-3">
+      <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/inventory-setting/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
             <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/inventory-icon.png" alt="" />
             <h2 class="text-2xl">المخازن</h2>
         </div>
     </div>
 
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/category-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
+    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/category-setting/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
             <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/category-icon.png" alt="" />
             <h2 class="text-2xl">الفئـــات</h2>
         </div>
     </div>
 
     <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/product-setting']">
-        <div class="flex flex-col items-center justify-center gap-2">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
             <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/product-icon.png" alt="" />
             <h2 class="text-2xl">المنتجات</h2>
         </div>
     </div>
 </div>
+
+<div [class]="role === 'Admin' ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'" class="grid gap-3">
+    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/client-setting/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
+            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/client-icon.png" alt="" />
+            <h2 class="text-2xl">العملاء</h2>
+        </div>
+    </div>
+
+    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/supplier-setting/']">
+        <div class="flex flex-col items-center justify-center gap-2 text-center">
+            <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/supplier-icon.png" alt="" />
+            <h2 class="text-2xl">الموردين</h2>
+        </div>
+    </div>
+    @if(role === 'Admin'){
+        <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/settings/employee-setting/']">
+            <div class="flex flex-col items-center justify-center gap-2 text-center">
+                <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/employee-icon.png" alt="" />
+                <h2 class="text-2xl">الموظفين</h2>
+            </div>
+        </div>
+    }
+</div>
+
+
+

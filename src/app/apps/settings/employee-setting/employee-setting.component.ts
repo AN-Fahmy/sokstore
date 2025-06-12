@@ -1,42 +1,121 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { EmployeeService } from 'src/app/service/employee/employee.service';
+import Swal from 'sweetalert2';
 
 interface IEmployee {
   id: number;
-  name: string;
+  fullName: string;
+  mobile: number;
   address: string;
-  phone: number;
-  userName: string;
+  username: string;
   password: string;
+  role:string
 }
 
 @Component({
   selector: 'app-employee-setting',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, ReactiveFormsModule],
   templateUrl: './employee-setting.component.html',
   styleUrl: './employee-setting.component.css'
 })
-export class EmployeeSettingComponent {
-    employees: IEmployee[] = [
-        { id: 1, name: 'محمد', address: 'شارع التحرير', phone: 0o1247362751, userName:'user1', password:'123123123'},
-        { id: 2, name: 'أحمد', address: 'شارع السلام الجديد', phone: 0o1247523416, userName:'user2', password:'123123123'},
-    ];
+export class EmployeeSettingComponent implements OnInit {
+    private readonly _FormBuilder = inject(FormBuilder)
+    private readonly _AuthService = inject(AuthService)
+    private readonly _EmployeeService = inject(EmployeeService)
 
-    filteredEmployees: IEmployee[] = [...this.employees];
+    allEmpolyees:any[] = []
+    employeeId:string = ''
+    update:boolean = false
+    ngOnInit(): void {
+        this.getAllEmployee()
+    }
+
+    getAllEmployee():void{
+        this._EmployeeService.getAllEmployee().subscribe({
+            next:(res)=>{
+                this.allEmpolyees = res.data
+                this.filteredEmployees = [...this.allEmpolyees]
+            }
+        })
+    }
+
+    employeeForm:FormGroup = this._FormBuilder.group({
+        fullName: [''],
+        mobile: [''],
+        address: [''],
+        username: [''],
+        password: [''],
+        roleId: ['9ac8f100-4613-4c66-99d5-c29da5dc6993'],
+    })
+
+    submitEmployeeForm():void{
+        let data = this.employeeForm.value
+        this._AuthService.register(data).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم إضافة موظف بنجاح",
+                    icon: "success",
+                })
+                this.employeeForm.reset()
+                this.employeeForm.get('roleId')?.setValue('9ac8f100-4613-4c66-99d5-c29da5dc6993')
+                this.getAllEmployee()
+            }
+        })
+    }
+
+    deleteEmployee(id:number):void{
+        this._EmployeeService.deleteEmployee(id).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم حذف موظف بنجاح",
+                    icon: "success",
+                })
+                this.getAllEmployee()
+            }
+        })
+    }
+
+    pathEmployeeData(employee:any):void{
+        this.employeeId = employee.id
+        this.employeeForm.patchValue(employee)
+        this.update = true
+    }
+
+    updateEmployee():void{
+        let data = this.employeeForm.value
+        data.id = this.employeeId
+
+        this._EmployeeService.updateEmployee(this.employeeId, data).subscribe({
+            next:(res)=>{
+                this.update = false
+                Swal.fire({
+                    title: "تم تعديل الموظف بنجاح",
+                    icon: "success",
+                })
+                this.employeeForm.reset()
+                this.getAllEmployee()
+            }
+        })
+    }
+
+    filteredEmployees: IEmployee[] = [...this.allEmpolyees];
     searchTerm: string = '';
-    sortColumn: keyof IEmployee = 'name';
+    sortColumn: keyof IEmployee = 'fullName';
     sortDirection: 'asc' | 'desc' = 'asc';
 
     filterEmployees() {
         const term = this.searchTerm.trim().toLowerCase();
 
-        this.filteredEmployees = this.employees.filter(supplier => {
+        this.filteredEmployees = this.allEmpolyees.filter(employee => {
             return (
-                supplier.name.toLowerCase().includes(term) ||
-                supplier.address.toString().includes(term) ||
-                supplier.phone.toString().includes(term)
+                employee.fullName.toLowerCase().includes(term) ||
+                employee.address.toString().includes(term) ||
+                employee.mobile.toString().includes(term) ||
+                employee.username.toString().includes(term)
             );
         });
 
@@ -69,16 +148,5 @@ export class EmployeeSettingComponent {
 
             return 0;
         });
-    }
-
-    onEdit(product: IEmployee) {
-        console.log('تعديل الموظف:', product);
-    }
-
-    onDelete(id: number) {
-        if (confirm('هل أنت متأكد من الحذف؟')) {
-            this.employees = this.employees.filter(p => p.id !== id);
-            this.filterEmployees();
-        }
     }
 }

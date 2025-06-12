@@ -1,40 +1,115 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { ClientService } from 'src/app/service/client/client.service';
+import Swal from 'sweetalert2';
 
 interface IClient {
   id: number;
-  name: string;
+  fullName: string;
   address: string;
-  phone: number;
+  mobile: number;
 }
 
 @Component({
   selector: 'app-client-setting',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, ReactiveFormsModule],
   templateUrl: './client-setting.component.html',
   styleUrl: './client-setting.component.css'
 })
-export class ClientSettingComponent {
-    clients: IClient[] = [
-        { id: 1, name: 'إسلام', address: 'شارع التحرير', phone: 0o1247362751},
-        { id: 2, name: 'محمود', address: 'شارع السلام الجديد', phone: 0o1247523416},
-    ];
+export class ClientSettingComponent implements OnInit{
+    private readonly _FormBuilder = inject(FormBuilder)
+    private readonly _AuthService = inject(AuthService)
+    private readonly _ClientService = inject(ClientService)
 
-    filteredClients: IClient[] = [...this.clients];
+    allClients:any[] = []
+    clientId:string = ''
+    update:boolean = false
+
+    ngOnInit(): void {
+        this.getAllClients()
+    }
+
+    getAllClients():void{
+        this._ClientService.getAllClients().subscribe({
+            next:(res)=>{
+                this.allClients = res.data
+                this.filteredClients = [...this.allClients]
+            }
+        })
+    }
+
+    clientForm:FormGroup = this._FormBuilder.group({
+        fullName:[''],
+        mobile:[''],
+        address:[''],
+        roleId:['2d01063b-1439-462a-9b3b-9b60a777719c']
+    })
+
+    submitClientForm():void{
+        let data = this.clientForm.value
+        this._AuthService.register(data).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم إضافة عميل بنجاح",
+                    icon: "success",
+                })
+                this.clientForm.reset()
+                this.clientForm.get('roleId')?.setValue('2d01063b-1439-462a-9b3b-9b60a777719c')
+                this.getAllClients()
+            }
+        })
+    }
+
+    deleteClient(id:number):void{
+        this._ClientService.deleteClient(id).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم حذف العميل بنجاح",
+                    icon: "success",
+                })
+                this.getAllClients()
+            }
+        })
+    }
+
+    patchClientData(client:any):void{
+        this.clientId = client.id
+        this.clientForm.patchValue(client)
+        this.update = true
+    }
+
+    updateClient():void{
+        let data = this.clientForm.value
+        data.id = this.clientId
+
+        this._ClientService.updateClient(this.clientId, data).subscribe({
+            next:(res)=>{
+                this.update = false
+                Swal.fire({
+                    title: "تم تعديل العميل بنجاح",
+                    icon: "success",
+                })
+                this.clientForm.reset()
+                this.getAllClients()
+            }
+        })
+    }
+
+    filteredClients: IClient[] = [...this.allClients];
     searchTerm: string = '';
-    sortColumn: keyof IClient = 'name';
+    sortColumn: keyof IClient = 'fullName';
     sortDirection: 'asc' | 'desc' = 'asc';
 
     filterClients() {
         const term = this.searchTerm.trim().toLowerCase();
-
-        this.filteredClients = this.clients.filter(supplier => {
+        this.filteredClients = this.allClients.filter(client => {
             return (
-                supplier.name.toLowerCase().includes(term) ||
-                supplier.address.toString().includes(term) ||
-                supplier.phone.toString().includes(term)
+                client.fullName.toLowerCase().includes(term) ||
+                client.address.toString().includes(term) ||
+                client.mobile.toString().includes(term)
             );
         });
 
@@ -49,7 +124,6 @@ export class ClientSettingComponent {
         }
         this.sort();
     }
-
     sort() {
         this.filteredClients.sort((a, b) => {
             const valueA = a[this.sortColumn];
@@ -65,16 +139,5 @@ export class ClientSettingComponent {
 
             return 0;
         });
-    }
-
-    onEdit(product: IClient) {
-        console.log('تعديل العميل:', product);
-    }
-
-    onDelete(id: number) {
-        if (confirm('هل أنت متأكد من الحذف؟')) {
-            this.clients = this.clients.filter(p => p.id !== id);
-            this.filterClients();
-        }
     }
 }
