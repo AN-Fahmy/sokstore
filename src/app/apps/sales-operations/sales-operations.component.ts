@@ -188,7 +188,6 @@ export class SalesOperationsComponent implements OnInit{
                 operation.totelAmount.toString().includes(term) ||
                 operation.description.toString().includes(term) ||
                 operation.discount.toString().includes(term)
-
             );
         });
 

@@ -2,157 +2,216 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxCustomModalComponent } from 'ngx-custom-modal';
 import { ClientService } from 'src/app/service/client/client.service';
+import { ProductService } from 'src/app/service/product/product.service';
 import { SalesoperationService } from 'src/app/service/sales-operation/salesoperation.service';
+import Swal from 'sweetalert2';
 
 interface ISalesOperation {
-  id: number;
-  clientName: string;
-  porductName: string;
-  details: string;
-  quantity: number;
-  totalAmount: number;
+  orderId: number;
+  supplierName: string;
+  totelAmount: number;
+  discount:number;
+  description: string;
+  productsName:any;
 }
-
 
 @Component({
   selector: 'app-purchases-operations',
   standalone: true,
-  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor],
+  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent],
   templateUrl: './purchases-operations.component.html',
   styleUrl: './purchases-operations.component.css'
 })
 export class PurchasesOperationsComponent {
-    private readonly _FormBuilder = inject(FormBuilder)
-    private readonly _SalesoperationService = inject(SalesoperationService)
-    private readonly _ClientService = inject(ClientService)
+     private readonly _FormBuilder = inject(FormBuilder)
+        private readonly _SalesoperationService = inject(SalesoperationService)
+        private readonly _ClientService = inject(ClientService)
+        private readonly _ProductService = inject(ProductService)
 
-    allSalesOperations:any[] = []
-    allClients:any[] = []
-    operationId:string = ''
-    
-    salesOperation: ISalesOperation[] = [
-        { id: 1, clientName: 'محمد', porductName: 'عطر رجالي', quantity: 12, totalAmount: 1249, details:'اول عملية بيع'},
-        { id: 2, clientName: 'أحمد', porductName: 'اسوارة حريمي', quantity: 52, totalAmount: 320, details:'تاني عملية بيع'},
-    ];
+        allPurchasesOperations:any[] = []
+        allSuppliers:any[] = []
+        allProducts:any[] = []
+        saleOperationById:any = {}
 
-    ngOnInit(): void {
-        this.getAllSalesOperations()
-        this.addProduct()
-    }
+        ngOnInit(): void {
+            this.getAllPurchasesOperations()
+            this.getAllSuppliers()
+            this.getAllProducts()
+            this.addProduct()
+            this.salesOperationFrom.get('discount')?.valueChanges.subscribe(() => {
+                this.calculateTotelAmount();
+            });
+        }
 
-    getAllSalesOperations():void{
-        this._SalesoperationService.getAllSalesOperations().subscribe({
-            next:(res)=>{
-                this.allSalesOperations = res.data
-            }
+        getAllPurchasesOperations():void{
+            this._SalesoperationService.getAllSalesOperations().subscribe({
+                next:(res)=>{
+                    this.allPurchasesOperations = res.data
+                    this.filteredSalesOperations = [...this.allPurchasesOperations]
+                }
+            })
+        }
+
+        getAllSuppliers():void{
+            this._ClientService.getAllClients().subscribe({
+                next:(res)=>{
+                    this.allSuppliers = res.data
+                }
+            })
+        }
+
+        getAllProducts():void{
+            this._ProductService.getAllProducts().subscribe({
+                next:(res)=>{
+                    this.allProducts = res.data
+                }
+            })
+        }
+
+        getProductById(id:number):void{
+            this._SalesoperationService.getSaleOperationById(id).subscribe({
+                next:(res)=>{
+                    this.saleOperationById = res.data
+                }
+            })
+        }
+
+        salesOperationFrom:FormGroup = this._FormBuilder.group({
+            clientId:[null],
+            discount: [null],
+            description: [null],
+            totelAmount: [{ value: '', disabled: true }],
+            products: this._FormBuilder.array([])
         })
-    }
 
-    getAllClients():void{
-        this._ClientService.getAllClients().subscribe({
-            next:(res)=>{
-                this.allClients = res.data
-            }
-        })
-    }
+        products():FormArray{
+            return this.salesOperationFrom.get('products') as FormArray
+        }
 
-    salesOperationFrom:FormGroup = this._FormBuilder.group({
-        clientId:[''],
-        sale:[''],
-        totalOrder:[''],
-        totalAmount:[''],
-        totalAfterSale:[''],
-        productsDetails: this._FormBuilder.array([])
-    })
-
-    products():FormArray{
-        return this.salesOperationFrom.get('products') as FormArray
-    }
-
-    addProduct(){
-        if(this.products().length < 5){
+        addProduct(){
             const product = this._FormBuilder.group({
-                porductId: ['', [Validators.required]],
-                salesAmount: ['', [Validators.required]],
+                productId: ['', Validators.required],
+                salesAmount: [{ value: '', disabled: true }, Validators.required],
                 quantity: ['', Validators.required],
-                totalAmount: ['', Validators.required],
+                totelAmount: [{ value: '', disabled: true }, Validators.required],
             })
             this.products().push(product)
+            this.watchProductChanges(this.products().length - 1);
+            this.calculateTotelAmount();
         }
-    }
 
-    removeProduct(index:number){
-        this.products().removeAt(index)
-    }
-
-    submitSalesOperationForm():void{
-        console.log(this.salesOperationFrom.value);
-    }
-
-
-
-
-
-    filteredSalesOperations: ISalesOperation[] = [...this.salesOperation];
-    searchTerm: string = '';
-    sortColumn: keyof ISalesOperation = 'clientName';
-    sortDirection: 'asc' | 'desc' = 'asc';
-
-    filterSalesOperations() {
-        const term = this.searchTerm.trim().toLowerCase();
-
-        this.filteredSalesOperations = this.salesOperation.filter(supplier => {
-            return (
-                supplier.clientName.toLowerCase().includes(term) ||
-                supplier.porductName.toString().includes(term) ||
-                supplier.quantity.toString().includes(term) ||
-                supplier.totalAmount.toString().includes(term) ||
-                supplier.details.toString().includes(term)
-            );
-        });
-
-        this.sort();
-    }
-    sortBy(column: keyof ISalesOperation) {
-        if (this.sortColumn === column) {
-            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            this.sortColumn = column;
-            this.sortDirection = 'asc';
+        removeProduct(index:number){
+            this.products().removeAt(index)
         }
-        this.sort();
-    }
-    sort() {
-        this.filteredSalesOperations.sort((a, b) => {
-            const valueA = a[this.sortColumn];
-            const valueB = b[this.sortColumn];
 
-            if (typeof valueA === 'string' && typeof valueB === 'string') {
-            return this.sortDirection === 'asc'
-                ? valueA.localeCompare(valueB)
-                : valueB.localeCompare(valueA);
+        watchProductChanges(index: number) {
+            const productGroup = this.products().at(index);
+            productGroup.get('productId')?.valueChanges.subscribe((productId: number) => {
+                if (productId) {
+                this._ProductService.getProductById(productId).subscribe({
+                    next: (res) => {
+                    const product = res.data;
+                    productGroup.get('salesAmount')?.setValue(product.sellingPrice);
+
+                    const qty = productGroup.get('quantity')?.value || 0;
+                    productGroup.get('totelAmount')?.setValue(qty * product.sellingPrice);
+
+                    this.calculateTotelAmount();
+                    }
+                });
+                }
+            });
+
+            productGroup.get('quantity')?.valueChanges.subscribe((qty: number) => {
+                const price = productGroup.get('salesAmount')?.value || 0;
+                productGroup.get('totelAmount')?.setValue(qty * price);
+                this.calculateTotelAmount();
+            });
+        }
+
+        calculateTotelAmount() {
+            const productsArray = this.products();
+            let totalSum = 0;
+
+            productsArray.controls.forEach(product => {
+                const total = +product.get('totelAmount')?.value || 0;
+                totalSum += total;
+            });
+
+            const discount = +this.salesOperationFrom.get('discount')?.value || 0;
+
+            const totalAfterDiscount = totalSum - discount;
+
+            this.salesOperationFrom.get('totelAmount')?.setValue(totalAfterDiscount);
+        }
+
+        submitSalesOperationForm():void{
+            let data = this.salesOperationFrom.value
+
+            this._SalesoperationService.createSaleOperation(data).subscribe({
+                next:(res)=>{
+                   Swal.fire({
+                        title: "تمت عملية البيع بنجاح",
+                        icon: "success",
+                    })
+                    this.salesOperationFrom.reset()
+                    this.getAllPurchasesOperations()
+                },
+                error:(err)=>{
+                    Swal.fire({
+                        title: err.error.errors[0],
+                        icon: "error",
+                    })
+                    this.getAllPurchasesOperations()
+                }
+            })
+        }
+
+        filteredSalesOperations: ISalesOperation[] = [...this.allPurchasesOperations];
+        searchTerm: string = '';
+        sortColumn: keyof ISalesOperation = 'supplierName';
+        sortDirection: 'asc' | 'desc' = 'asc';
+
+        filterSalesOperations() {
+            const term = this.searchTerm.trim().toLowerCase();
+            this.filteredSalesOperations = this.allPurchasesOperations.filter(operation => {
+                return (
+                    operation.clientName.toLowerCase().includes(term) ||
+                    operation.totelAmount.toString().includes(term) ||
+                    operation.description.toString().includes(term) ||
+                    operation.discount.toString().includes(term)
+                );
+            });
+
+            this.sort();
+        }
+        sortBy(column: keyof ISalesOperation) {
+            if (this.sortColumn === column) {
+                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortColumn = column;
+                this.sortDirection = 'asc';
             }
+            this.sort();
+        }
+        sort() {
+            this.filteredSalesOperations.sort((a, b) => {
+                const valueA = a[this.sortColumn];
+                const valueB = b[this.sortColumn];
 
-            if (typeof valueA === 'number' && typeof valueB === 'number') {
-            return this.sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
-            }
+                if (typeof valueA === 'string' && typeof valueB === 'string') {
+                return this.sortDirection === 'asc'
+                    ? valueA.localeCompare(valueB)
+                    : valueB.localeCompare(valueA);
+                }
 
-            return 0;
-        });
-    }
-    // onEdit(product: ISalesOperation) {
-    //     console.log('تعديل الموظف:', product);
-    // }
-    // onDelete(id: number) {
-    //     if (confirm('هل أنت متأكد من الحذف؟')) {
-    //         this.salesOperation = this.salesOperation.filter(p => p.id !== id);
-    //         this.filterSalesOperations();
-    //     }
-    // }
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                return this.sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+                }
 
-    options1 = ['إسلام', 'محمود', 'عماد'];
-    options2= ['منتج 1', 'منتج 2', 'منتج 3'];
-    input1 = [];
-    input2 = [];
+                return 0;
+            });
+        }
 }

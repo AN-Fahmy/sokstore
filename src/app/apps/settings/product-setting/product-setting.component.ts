@@ -141,12 +141,12 @@ export class ProductSettingComponent {
 
     filterProducts() {
         const term = this.searchTerm.trim().toLowerCase();
+
         this.filteredProducts = this.allProducts.filter(product => {
             return (
-            product.name.toLowerCase().includes(term) ||
-            product.purchasePrice.toString().includes(term) ||
-            product.salePrice.toString().includes(term) ||
-            product.quantity.toString().includes(term)
+                product.name.toLowerCase().includes(term) ||
+                product.warehouseName.toLowerCase().includes(term) ||
+                product.categoryName.toLowerCase().includes(term)
             );
         });
 
@@ -169,13 +169,13 @@ export class ProductSettingComponent {
             const valueB = b[this.sortColumn];
 
             if (typeof valueA === 'string' && typeof valueB === 'string') {
-            return this.sortDirection === 'asc'
-                ? valueA.localeCompare(valueB)
-                : valueB.localeCompare(valueA);
+                return this.sortDirection === 'asc'
+                    ? valueA.localeCompare(valueB)
+                    : valueB.localeCompare(valueA);
             }
 
             if (typeof valueA === 'number' && typeof valueB === 'number') {
-            return this.sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+                return this.sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
             }
 
             return 0;

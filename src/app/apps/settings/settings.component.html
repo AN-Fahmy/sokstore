@@ -1,5 +1,5 @@
 
-<div [class]="role === 'Admin' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2'" class="grid gap-3">
+<div [class]="role === 'Admin' ? 'grid-cols-2' : 'grid-cols-2'" class="grid gap-3">
     <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/sales-operation/']">
         <div class="flex flex-col items-center justify-center gap-2 text-center">
             <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/sales-icon.png" alt="" />
@@ -7,12 +7,12 @@
         </div>
     </div>
 
-    <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-operation/']">
+    <!-- <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-operation/']">
         <div class="flex flex-col items-center justify-center gap-2 text-center">
             <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/purchase-icon.png" alt="" />
             <h2 class="text-2xl">المشتريات</h2>
         </div>
-    </div>
+    </div> -->
 
     @if(role === 'Admin'){
         <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/sales-return/']">
@@ -22,12 +22,12 @@
             </div>
         </div>
 
-        <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-return/']">
+        <!-- <div class="panel cursor-pointer hover:shadow-lg transition-all" [routerLink]="['/apps/purchases-return/']">
             <div class="flex flex-col items-center justify-center gap-2 text-center">
                 <img class="h-20 w-20 overflow-hidden rounded-md object-cover" src="assets/images/settings/purchase-return-icon.png" alt="" />
                 <h2 class="text-2xl">مرتجعات المشتريات</h2>
             </div>
-        </div>
+        </div> -->
         }
 </div>
 

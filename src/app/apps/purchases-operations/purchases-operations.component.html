@@ -4,11 +4,10 @@
         <form class="grid grid-cols-12 gap-3 mb-3" [formGroup]="salesOperationFrom" (ngSubmit)="submitSalesOperationForm()">
             <div class="col-span-12">
                 <label for="client">إسم المورد</label>
-                <ng-select formControlName="clientId" [items]="allClients" bindLabel="fullName" bindValue="id" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
+                <ng-select formControlName="clientId" [items]="allSuppliers" bindLabel="fullName" bindValue="id" [clearable]="false" placeholder="إختر المورد..." class="custom-multiselect"></ng-select>
             </div>
 
-
-            <div class="col-span-1">
+            <div class="md:col-span-1 col-span-12">
                 <div class="h-full flex justify-start items-center mt-1">
                     <button type="button" class="btn btn-sm btn-success" (click)="addProduct()">
                         <i class="fa-solid fa-plus"></i>
@@ -18,41 +17,56 @@
 
             <div class="col-span-11" formArrayName="products">
                 <ng-container *ngFor="let product of products().controls; let i = index">
-                <div [formGroupName]="i">
-                    <div class="grid grid-cols-12 gap-3 mb-3">
-                        <div class="col-span-3">
-                            <label for="employeeName">إسم المنتج</label>
-                            <ng-select formControlName="porductId" [items]="options2" [clearable]="false" placeholder="Select an option" class="custom-multiselect"></ng-select>
-                        </div>
-
-                        <div class="col-span-3">
-                            <label for="quantity">سعر الشراء</label>
-                            <input class="form-input" formControlName="salesAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
-                        </div>
-
-                        <div class="col-span-2">
-                            <label for="quantity">الكمية</label>
-                            <input class="form-input" formControlName="quantity" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
-                        </div>
-
-                        <div class="col-span-3">
-                            <label for="quantity">إجمالي المبلغ</label>
-                            <input class="form-input" formControlName="totalAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
-                        </div>
-
-                        <div class="col-span-1">
-                            <div class="h-full flex justify-center items-center mt-3">
-                                <button class="btn btn-sm btn-danger" (click)="removeProduct(i)"><i class="fa-solid fa-trash"></i></button>
+                    <div [formGroupName]="i">
+                        <div class="grid grid-col-1 md:grid-cols-12 gap-3 mb-3">
+                            <div [class]="i == 0 ? 'md:col-span-4' : 'md:col-span-3'" class="col-span-12">
+                                <label for="employeeName">إسم المنتج</label>
+                                <ng-select formControlName="productId" [items]="allProducts" bindLabel="name" bindValue="id" [clearable]="false" placeholder="إختر المنتج..." class="custom-multiselect"></ng-select>
                             </div>
+
+                            <div class="md:col-span-2 col-span-12">
+                                <label for="quantity">سعر الشراء</label>
+                                <input class="form-input" formControlName="salesAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                            </div>
+
+                            <div class="md:col-span-2 col-span-12">
+                                <label for="quantity">سعر البيع</label>
+                                <input class="form-input" formControlName="salesAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                            </div>
+
+                            <div class="md:col-span-2 col-span-12">
+                                <label for="quantity">الكمية</label>
+                                <input class="form-input" formControlName="quantity" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                            </div>
+
+                            <div class="md:col-span-2 col-span-12">
+                                <label for="quantity">إجمالي المبلغ</label>
+                                <input class="form-input" formControlName="totelAmount" type="number" name="quantity" id="quantity" placeholder="أدخل الكمية...">
+                            </div>
+
+                            @if(i > 0){
+                                <div class="col-span-1">
+                                    <div class="h-full flex justify-center items-center mt-3">
+                                        <button class="btn btn-sm btn-danger" (click)="removeProduct(i)"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
-                </div>
                 </ng-container>
+            </div>
+
+            <div class="col-span-3">
+                <label for="total">الإجمالي</label>
+                <div class="flex justify-center items-center gap-2">
+                    <input formControlName="totelAmount" class="form-input" type="number" id="total" name="total" placeholder="الإجمالي بعد الخصم...">
+                    <span class="text-[20px]">جنية</span>
+                </div>
             </div>
 
             <div class="col-span-12">
                 <label for="details">التفاصيل</label>
-                <textarea class="form-input" formControlName="details" name="details" id="details" placeholder="أدخل التفاصيل او الملاحظات..."></textarea>
+                <textarea formControlName="description" class="form-input" name="details" id="details" placeholder="أدخل التفاصيل او الملاحظات..."></textarea>
             </div>
 
             <div class="col-span-12">
@@ -63,7 +77,7 @@
         </form>
     </div>
     <div class="panel">
-        <h1 class="text-[35px] mb-5">عرض عمليات الشراء</h1>
+        <h1 class="text-[35px] mb-5">عرض عمليات البيع</h1>
         <div class="mb-4 max-w-md">
             <input
                 type="text"
@@ -78,73 +92,56 @@
             <table class="min-w-full bg-white border border-gray-300 text-right">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('clientName')">
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('supplierName')">
                             إسم المورد
-                            <span *ngIf="sortColumn === 'clientName'">
+                            <span *ngIf="sortColumn === 'supplierName'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
-                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('porductName')">
+
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('productsName')">
                             المنتجات
-                            <span *ngIf="sortColumn === 'porductName'">
+                            <span *ngIf="sortColumn === 'productsName'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
 
-                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('quantity')">
-                            الكمية
-                            <span *ngIf="sortColumn === 'quantity'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                        </th>
-
-                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalAmount')">
-                            سعر الشراء
-                            <span *ngIf="sortColumn === 'totalAmount'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                        </th>
-
-                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalAmount')">
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totelAmount')">
                             إجمالي المبلغ
-                            <span *ngIf="sortColumn === 'totalAmount'">
+                            <span *ngIf="sortColumn === 'totelAmount'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
 
-                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('details')">
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('description')">
                             التفاصيل
-                            <span *ngIf="sortColumn === 'details'">
+                            <span *ngIf="sortColumn === 'description'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
-
-                        <!-- <th class="px-4 py-2 border">الإجراء</th> -->
+                        <th class="px-4 py-2 border text-center">الإجراء</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for(employee of filteredSalesOperations; track $index){
+                    @for(operation of filteredSalesOperations; track $index){
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-2 border">{{ employee.clientName }}</td>
-                            <td class="px-4 py-2 border">{{ employee.porductName }}</td>
-                            <td class="px-4 py-2 border">{{ employee.quantity }}</td>
-                            <td class="px-4 py-2 border">{{ (employee.totalAmount / employee.quantity).toFixed(2) }} جنية</td>
-                            <td class="px-4 py-2 border">{{ employee.totalAmount }} جنية</td>
-                            <td class="px-4 py-2 border">{{ employee.details }}</td>
-                            <!-- <td class="px-4 py-2 border">
-                            <button
-                                class="text-blue-600 hover:underline mr-2"
-                                (click)="onEdit(employee)"
-                            >
-                                تعديل
-                            </button>
-                            <button
-                                class="text-red-600 hover:underline"
-                                (click)="onDelete(employee.id)"
-                            >
-                                حذف
-                            </button>
-                            </td> -->
+                            <td class="px-4 py-2 border">{{ operation.supplierName }}</td>
+                            <td class="px-4 py-2 border">
+                                @for (product of operation.productsName; track $index) {
+                                    <ul>
+                                        <li>{{product}}</li>
+                                    </ul>
+                                }
+                            </td>
+                            <td class="px-4 py-2 border">{{ operation.totelAmount }}ج</td>
+                            <td class="px-4 py-2 border">{{ operation.description }}</td>
+                            <td class="px-4 py-2 border">
+                               <div class="flex justify-center items-center gap-3">
+                                    <button class="text-blue-600 hover:underline" (click)="modal2.open(); getProductById(operation.orderId)">
+                                        <i class="fa-solid fa-pen-to-square text-success"></i>
+                                    </button>
+                               </div>
+                            </td>
                         </tr>
                     }
 
@@ -160,3 +157,35 @@
         </div>
     </div>
 </section>
+
+<!-- Modal -->
+<ngx-custom-modal #modal2 customClass="modal-top extra-large-modal">
+    <ng-template #modalHeader> <div class="text-center">تفاصيل عملية البيع</div> </ng-template>
+    <ng-template #modalBody>
+        <table class="min-w-full bg-white border border-gray-300 text-right">
+            <tbody>
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-4 py-2 border">{{ saleOperationById.clientName }}</td>
+                    <td class="px-4 py-2 border">
+                        @for (product of saleOperationById.products; track $index) {
+                            <ul>
+                                <li>{{product.productName}}</li>
+                                <li>{{product.quantity}}</li>
+                                <li>{{product.unitPrice}}</li>
+                            </ul>
+                            <hr>
+                            <hr>
+                        }
+                    </td>
+                    <td class="px-4 py-2 border">{{ saleOperationById.totalAmount }} جنية</td>
+                    <td class="px-4 py-2 border">{{ saleOperationById.discount }} جنية</td>
+                    <td class="px-4 py-2 border">{{ saleOperationById.totalAfterSale }} جنية</td>
+                    <td class="px-4 py-2 border">{{ saleOperationById.description }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button type="button" (click)="modal2.close()" class="btn btn-outline-danger">خروج</button>
+    </ng-template>
+</ngx-custom-modal>
