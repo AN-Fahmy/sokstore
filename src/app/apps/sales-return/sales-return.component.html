@@ -1,106 +1,140 @@
 <section>
-    <div class="panel mb-4">
-        <h1 class="text-[35px] mb-4">إرتجاع مبيعات</h1>
-        <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-6">
-                <label>رقم الفاتورة</label>
-                <ng-select
-                    [items]="salesOperation"
-                    bindLabel="id"
-                    bindValue="id"
-                    [(ngModel)]="selectedInvoiceId"
-                    (change)="onInvoiceChange()"
-                    placeholder="اختر رقم الفاتورة"
-                >
-                </ng-select>
-            </div>
-            @if(selectedInvoice){
-                <div class="col-span-6">
-                    <!-- اختيار المنتج -->
-                    <label>اختر المنتج</label>
-                    <ng-select
-                        [items]="selectedInvoice.products"
-                        bindLabel="porductName"
-                        bindValue="productId"
-                        [(ngModel)]="selectedProductId"
-                        (change)="onProductChange()"
-                        placeholder="اختر المنتج"
-                    >
-                    </ng-select>
-                </div>
-            }
+  <div class="panel mb-4">
+    <h1 class="text-[35px] mb-4">مرتجعات مبيعات</h1>
 
-            @if(selectedProduct){
-                <div class="col-span-12">
-                    <table class="table-auto border-collapse border border-gray-300 mb-3 w-full text-center">
-                        <thead>
-                            <tr class="bg-gray-100">
-                            <th class="border border-gray-300 px-4 py-2">العميل</th>
-                            <th class="border border-gray-300 px-4 py-2">اسم المنتج</th>
-                            <th class="border border-gray-300 px-4 py-2">الكمية المتاحة</th>
-                            <th class="border border-gray-300 px-4 py-2">سعر البيع</th>
-                            <th class="border border-gray-300 px-4 py-2">الإجمالي (جنية)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="selectedInvoice && selectedProduct">
-                            <td class="border border-gray-300 px-4 py-2">{{ selectedInvoice.clientName }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.porductName }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.quantity }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ (selectedProduct.totalAmount  / selectedProduct.quantity).toFixed(2)}} جنية</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ selectedProduct.totalAmount }} جنية</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <label>الكمية المرتجعة</label>
-                    <input
-                        type="number"
-                        class="form-input"
-                        [(ngModel)]="returnQuantity"
-                        [max]="selectedProduct.quantity"
-                        min="1"
-                        placeholder="أدخل الكمية المرتجعة"
-                    />
-
-                    @if(returnQuantity > 0){
-                        <p>
-                            قيمة المرتجع: {{ calculateRefundAmount() }} جنية
-                        </p>
-                    }
-
-
-                    <button (click)="addReturn()" class="btn btn-primary mt-3">تسجيل المرتجع</button>
-                </div>
-            }
-        </div>
+    <div class="grid grid-cols-12 gap-3 mb-4">
+      <div class="col-span-6">
+        <label>رقم الفاتورة</label>
+        <ng-select
+          [items]="allSalesOperations"
+          bindLabel="orderId"
+          bindValue="orderId"
+          [(ngModel)]="selectedInvoiceId"
+          (change)="onInvoiceChange()"
+          placeholder="اختر رقم الفاتورة"
+        ></ng-select>
+      </div>
     </div>
 
-    @if(returnsHistory.length > 0){
-        <div class="panel">
-            <h2 class="text-[35px] mb-4">سجل المرتجعات</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>رقم الفاتورة</th>
-                        <th>اسم المنتج</th>
-                        <th>الكمية المرتجعة</th>
-                        <th>قيمة المرتجع</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (invoice of returnsHistory; track $index) {
-                        <tr>
-                            <td>{{ invoice.invoiceId }}</td>
-                            <td>{{ invoice.productName }}</td>
-                            <td>{{ invoice.returnQuantity }}</td>
-                            <td>{{ invoice.refundAmount }} جنية</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+    @if (selectedInvoice) {
+      <h2 class="text-xl mb-2">تفاصيل الفاتورة - العميل: {{ selectedInvoice.clientName }}</h2>
+      <table class="table-auto border-collapse border border-gray-300 mb-3 w-full text-center">
+        <thead>
+          <tr class="bg-gray-100">
+            <th>اسم المنتج</th>
+            <th>الكمية</th>
+            <th>سعر البيع</th>
+            <th>الإجمالي</th>
+            <th>إجراء</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of selectedInvoice.products; track $index) {
+            <tr>
+              <td>{{ product.productName }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.unitPrice }} جنية</td>
+              <td>{{ product.unitPrice * product.quantity }} جنية</td>
+              <td>
+                <button (click)="toggleReturnInput(product)" class="text-blue-600 hover:underline">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+              </td>
+            </tr>
 
+            @if (product.showReturnInput) {
+              <tr>
+                <td colspan="5" class="text-right p-3 bg-gray-50">
+                    <label>الكمية المرتجعة:</label>
+                    <div class="flex gap-3 items-center">
+                        <input
+                            type="number"
+                            class="form-input w-32 mx-2 text-center"
+                            [(ngModel)]="product.returnQty"
+                            [min]="1"
+                            [max]="product.quantity"
+                            (input)="validateReturnQty(product)"
+                            (keypress)="preventMinus($event)"
+                            placeholder="أدخل الكمية"
+                        />
+
+                        <span class="ml-4 text-[18px]">
+                            <strong>قيمة المرتجع:</strong>
+                            {{ product.returnQty ? (product.unitPrice * product.returnQty) : 0 }} جنية
+                        </span>
+
+                        <button class="btn border border-green-500 hover:bg-green-500 hover:text-white" (click)="confirmReturn(selectedInvoice.id, product)">
+                            تأكيد المرتجع
+                        </button>
+                    </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+
+      <button class="btn btn-success ml-3" (click)="returnSelectedItems()">تسجيل المرتجعات المحددة</button>
+    }
+  </div>
+
+  @if (allSalesReturn.length > 0) {
+    <div class="panel">
+      <h2 class="text-[35px] mb-4">سجل المرتجعات</h2>
+      <table class="table-auto w-full border border-gray-300 text-center">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="text-center">رقم الفاتورة</th>
+            <th class="text-center">التاريخ</th>
+            <th class="text-center">المنتجات</th>
+            <th class="text-center">إجراء</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of allSalesReturn; track $index) {
+            <tr>
+              <td class="text-center">{{ item.orderId }}</td>
+              <td class="text-center">{{ item.returnedAt | date: 'yyyy/MM/dd - hh:mm a' }}</td>
+              <td class="text-center">
+                <table class="table-auto w-full border border-gray-300 text-center">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="text-center">المنتج</th>
+                            <th class="text-center">الكمية المرتجعة</th>
+                            <th class="text-center">سعر البيع</th>
+                            <th class="text-center">القيمة المرتجعة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (products of item.products; track $index) {
+                            <tr>
+                                <td class="text-center">
+                                    <span>{{ products.productName }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ products.quantity }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ products.unitPrice || 0 }} جنية</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ products.productTotal || 0 }} جنية</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+              </td>
+              <td class="text-center">
+                <button class="text-red-600 hover:underline" (click)="deleteSalesReturn(item.id)">
+                  <i class="fa-solid fa-trash-can text-danger text-[20pxd]"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </section>

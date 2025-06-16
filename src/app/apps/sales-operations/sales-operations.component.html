@@ -4,7 +4,16 @@
         <form class="grid grid-cols-12 gap-3 mb-3" [formGroup]="salesOperationFrom" (ngSubmit)="submitSalesOperationForm()">
             <div class="col-span-12">
                 <label for="client">إسم العميل</label>
-                <ng-select formControlName="clientId" [items]="allClients" bindLabel="fullName" bindValue="id" [clearable]="false" placeholder="إختر العميل" class="custom-multiselect"></ng-select>
+                <ng-select
+                    formControlName="clientId"
+                    [items]="allClients"
+                    bindLabel="fullName"
+                    bindValue="id"
+                    [clearable]="false"
+                    placeholder="إختر العميل"
+                    class="custom-multiselect"
+                    [searchFn]="customSearchClientFn">
+                </ng-select>
             </div>
 
             <div class="md:col-span-1 col-span-12">
@@ -89,6 +98,13 @@
             <table class="min-w-full bg-white border border-gray-300 text-right">
                 <thead class="bg-gray-100">
                     <tr>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('orderId')">
+                            رقم الفاتورة
+                            <span *ngIf="sortColumn === 'orderId'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('clientName')">
                             إسم العميل
                             <span *ngIf="sortColumn === 'clientName'">
@@ -122,6 +138,7 @@
                 <tbody>
                     @for(operation of filteredSalesOperations; track $index){
                         <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 border">{{ operation.orderId }}</td>
                             <td class="px-4 py-2 border">{{ operation.clientName }}</td>
                             <td class="px-4 py-2 border">
                                 @for (product of operation.productsName; track $index) {
@@ -159,28 +176,42 @@
 <ngx-custom-modal #modal2 customClass="modal-top extra-large-modal">
     <ng-template #modalHeader> <div class="text-center">تفاصيل عملية البيع</div> </ng-template>
     <ng-template #modalBody>
-        <table class="min-w-full bg-white border border-gray-300 text-right">
+        <h3 class="text-[18px]">رقم الفاتورة : <strong>{{saleOperationById.id}}</strong></h3>
+        <h3 class="text-[18px] my-3">إسم العميل : <strong>{{saleOperationById.clientName}}</strong></h3>
+        <h3 class="text-[18px]">تفاصيل الفاتورة : </h3>
+        <table class="table-auto w-full text-center">
             <tbody>
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-4 py-2 border">{{ saleOperationById.clientName }}</td>
-                    <td class="px-4 py-2 border">
-                        @for (product of saleOperationById.products; track $index) {
-                            <ul>
-                                <li>{{product.productName}}</li>
-                                <li>{{product.quantity}}</li>
-                                <li>{{product.unitPrice}}</li>
-                            </ul>
-                            <hr>
-                            <hr>
-                        }
+                <tr>
+                    <td>
+                        <table  class="table-auto border border-gray-50 w-full text-center">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>سعر البيع</th>
+                                    <th>الإجمالي</th>
+                                    <th>المترجع</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(product of saleOperationById.products ; track $index){
+                                    <tr>
+                                        <td>{{product.productName}}</td>
+                                        <td>{{product.quantity}}</td>
+                                        <td>{{product.unitPrice}} جنية</td>
+                                        <td>{{product.unitPrice * product.quantity || 0}} جنية</td>
+                                        <td>{{product.returnedQuantity || 0}}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </td>
-                    <td class="px-4 py-2 border">{{ saleOperationById.totalAmount }} جنية</td>
-                    <td class="px-4 py-2 border">{{ saleOperationById.discount }} جنية</td>
-                    <td class="px-4 py-2 border">{{ saleOperationById.totalAfterSale }} جنية</td>
-                    <td class="px-4 py-2 border">{{ saleOperationById.description }}</td>
                 </tr>
             </tbody>
         </table>
+        <h3 class="text-[18px]">الإجمالي قبل الخصم : <strong>{{saleOperationById.totalAmount}} جنية</strong></h3>
+        <h3 class="text-[18px]">الخصم : <strong>{{saleOperationById.discount}}</strong></h3>
+        <h3 class="text-[18px]">الإجمالي بعد الخصم: <strong>{{saleOperationById.totalAfterSale}} جنية</strong></h3>
     </ng-template>
     <ng-template #modalFooter>
         <button type="button" (click)="modal2.close()" class="btn btn-outline-danger">خروج</button>

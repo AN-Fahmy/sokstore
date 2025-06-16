@@ -169,12 +169,6 @@ export class SalesOperationsComponent implements OnInit{
         })
     }
 
-    // salesOperation: ISalesOperation[] = [
-    //     { id: 1, clientName: 'محمد', porductName: 'عطر رجالي', quantity: 12, totelAmount: 1249, details:'اول عملية بيع'},
-    //     { id: 2, clientName: 'أحمد', porductName: 'اسوارة حريمي', quantity: 52, totelAmount: 320, details:'تاني عملية بيع'},
-    // ];
-
-
     filteredSalesOperations: ISalesOperation[] = [...this.allSalesOperations];
     searchTerm: string = '';
     sortColumn: keyof ISalesOperation = 'clientName';
@@ -185,9 +179,7 @@ export class SalesOperationsComponent implements OnInit{
         this.filteredSalesOperations = this.allSalesOperations.filter(operation => {
             return (
                 operation.clientName.toLowerCase().includes(term) ||
-                operation.totelAmount.toString().includes(term) ||
-                operation.description.toString().includes(term) ||
-                operation.discount.toString().includes(term)
+                operation.orderId.toString().includes(term)
             );
         });
 
@@ -219,5 +211,10 @@ export class SalesOperationsComponent implements OnInit{
 
             return 0;
         });
+    }
+
+    customSearchClientFn(term: string, item: any): boolean {
+        term = term.toLowerCase();
+        return item.fullName.toLowerCase().includes(term) || item.mobile?.toLowerCase().includes(term);
     }
 }
