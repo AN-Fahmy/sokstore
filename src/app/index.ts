@@ -1,12 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { toggleAnimation } from 'src/app/shared/animations';
+import { DashboardService } from './service/dashboard/dashboard.service';
 
 @Component({
     templateUrl: './index.html',
     animations: [toggleAnimation],
 })
-export class IndexComponent {
+export class IndexComponent implements OnInit{
+    private readonly _DashboardService = inject(DashboardService)
+
+    filterNumber:number = 1
+    allDataInChart:any[] = []
+    allSellingByCategories:any[] = []
+    totalSalesAmount:number = 0
+    topCategories:number = 0
+
+    ngOnInit(): void {
+        this.getChartDashboard()
+        this.getTopCategorySelling()
+    }
+
+    getChartDashboard():void{
+        let data = {
+            filter :this.filterNumber
+        }
+        this._DashboardService.ChartDashboard(data).subscribe({
+            next:(res)=>{
+                this.allDataInChart = res.data.data
+                this.totalSalesAmount = res.data.totalTodayOrderAmount
+                this.initCharts()
+
+            }
+        })
+    }
+
+    getTopCategorySelling():void{
+        this._DashboardService.GetTopCategorySelling().subscribe({
+            next:(res)=>{
+                this.allSellingByCategories = res.data.topCategories
+                this.totalSalesAmount = res.data.totalOrderAmount
+                console.log();
+                console.log(this.allSellingByCategories.map((selling:any)=> selling.totalAmount));
+                this.initCharts()
+
+            }
+        })
+    }
+
+
     store: any;
     revenueChart: any;
     salesByCategory: any;
@@ -114,10 +156,9 @@ export class IndexComponent {
                 },
             },
             yaxis: {
-                tickAmount: 7,
                 labels: {
                     formatter: (value: number) => {
-                        return value / 1000 + 'K';
+                        return value + 'K';
                     },
                     offsetX: isRtl ? -30 : -10,
                     offsetY: 0,
@@ -182,12 +223,12 @@ export class IndexComponent {
             },
             series: [
                 {
-                    name: 'Income',
-                    data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
+                    name: 'قيمة المكاسب',
+                    data: [...this.allDataInChart.map((amount)=> amount.totalOrderAmount)],
                 },
                 {
-                    name: 'Expenses',
-                    data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
+                    name: 'قيمة المصروفات',
+                    data: [...this.allDataInChart.map((amount)=> amount.totalReturnAmount)],
                 },
             ],
         };
@@ -256,7 +297,7 @@ export class IndexComponent {
                     },
                 },
             },
-            labels: ['العطور', 'الإكسسورات', 'أخرى'],
+            labels: [...this.allSellingByCategories.map((selling:any)=> selling.categoryName)],
             states: {
                 hover: {
                     filter: {
@@ -271,7 +312,7 @@ export class IndexComponent {
                     },
                 },
             },
-            series: [985, 737, 270],
+            series: [...this.allSellingByCategories.map((selling:any)=> selling.totalAmount)],
         };
 
         // daily sales
