@@ -108,7 +108,7 @@ export class IndexComponent implements OnInit{
         this.filteredSummary = this.allSummaryReport.filter(summary => {
             return (
                 summary.date.toLowerCase().includes(term) ||
-                summary.totalSales.toLowerCase().includes(term)
+                summary.totalSales.toString().includes(term)
             );
         });
 
