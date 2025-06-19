@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -9,18 +9,20 @@ import { SalesoperationService } from 'src/app/service/sales-operation/salesoper
 import Swal from 'sweetalert2';
 
 interface ISalesOperation {
+  index: number;
   orderId: number;
   clientName: string;
   totelAmount: number;
   discount:number;
   description: string;
   productsName:any;
+  createdAt:any;
 }
 
 @Component({
   selector: 'app-sales-operations',
   standalone: true,
-  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent],
+  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent, DatePipe],
   templateUrl: './sales-operations.component.html',
   styleUrl: './sales-operations.component.css',
 })

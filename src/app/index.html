@@ -12,7 +12,7 @@
         <div class="mb-6 grid gap-6 xl:grid-cols-3 overflow-hidden">
             <div class="panel h-full xl:col-span-2">
                 <div class="mb-5 flex items-center justify-between dark:text-white-light">
-                    <h5 class="text-lg font-semibold">المبيعات الشهرية</h5>
+                    <h5 class="text-lg font-semibold">المبيعات</h5>
                     <div class="dropdown ltr:ml-auto rtl:mr-auto">
                         <div hlMenu>
                             <a hlMenuButton href="javascript:;" class="align-middle">
@@ -20,19 +20,19 @@
                             </a>
                             <ul *hlMenuItems @toggleAnimation class="ltr:right-0 rtl:left-0">
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">اسبوعي</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem" (click)="getChartDashboard(1)">اسبوعي</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">شهري</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem" (click)="getChartDashboard(2)">شهري</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">سنوي</a>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem" (click)="getChartDashboard(3)">سنوي</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <p class="text-lg dark:text-white-light/90">إجمالي المبيعات <span class="ml-2 text-primary">{{totalSalesAmount}} جنية</span></p>
+                <p class="text-lg dark:text-white-light/90">إجمالي المبيعات <span class="ml-2 text-primary">{{totalSalesAmountToday}} جنية</span></p>
                 <div class="relative overflow-hidden">
                     <apx-chart
                         [series]="revenueChart.series"
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <!-- <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div class="panel h-full sm:col-span-2 xl:col-span-1">
                 <div class="mb-5 flex items-center">
                     <h5 class="text-lg font-semibold dark:text-white-light">
@@ -119,82 +119,6 @@
                 </div>
             </div>
 
-            <div class="panel h-full">
-                <div class="mb-5 flex items-center dark:text-white-light">
-                    <h5 class="text-lg font-semibold">Summary</h5>
-                    <div class="dropdown ltr:ml-auto rtl:mr-auto">
-                        <div hlMenu>
-                            <a href="javascript:;" hlMenuButton class="align-middle">
-                                <icon-horizontal-dots class="h-5 w-5 text-black/70 hover:!text-primary dark:text-white/70" />
-                            </a>
-                            <ul *hlMenuItems @toggleAnimation class="ltr:right-0 rtl:left-0">
-                                <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">View Report</a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">Edit Report</a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;" *hlMenuItem="let menuItem">Mark as Done</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-9">
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <div
-                                class="grid h-9 w-9 place-content-center rounded-full bg-secondary-light text-secondary dark:bg-secondary dark:text-secondary-light"
-                            >
-                                <icon-inbox />
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-white-dark">
-                                <h6>Income</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto">$92,600</p>
-                            </div>
-                            <div class="h-2 rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-11/12 rounded-full bg-gradient-to-r from-[#7579ff] to-[#b224ef]"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <div class="grid h-9 w-9 place-content-center rounded-full bg-success-light text-success dark:bg-success dark:text-success-light">
-                                <icon-tag />
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-white-dark">
-                                <h6>Profit</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto">$37,515</p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]" style="width: 65%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <div class="grid h-9 w-9 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-                                <icon-credit-card />
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-white-dark">
-                                <h6>Expenses</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto">$55,085</p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#f09819] to-[#ff5858]" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="panel h-full p-0">
                 <div class="absolute flex w-full items-center justify-between p-5">
                     <div class="relative">
@@ -205,8 +129,8 @@
                         </div>
                     </div>
                     <h5 class="text-2xl font-semibold ltr:text-right rtl:text-left dark:text-white-light">
-                        3,192
-                        <span class="block text-sm font-normal">Total Orders</span>
+                        {{allSalesOperations.length}}
+                        <span class="block text-sm font-normal">إجمالي الطلبات</span>
                     </h5>
                 </div>
                 <div class="overflow-hidden">
@@ -229,7 +153,82 @@
                 </div>
             </div>
 
-        </div> -->
+            <div class="panel h-full">
+                <div class="mb-5 flex items-center dark:text-white-light">
+                    <h5 class="text-lg font-semibold">ملخص المبيعات والمصروفات</h5>
+                    <!-- <div class="dropdown ltr:ml-auto rtl:mr-auto">
+                        <div hlMenu>
+                            <a href="javascript:;" hlMenuButton class="align-middle">
+                                <icon-horizontal-dots class="h-5 w-5 text-black/70 hover:!text-primary dark:text-white/70" />
+                            </a>
+                            <ul *hlMenuItems @toggleAnimation class="ltr:right-0 rtl:left-0">
+                                <li>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">View Report</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">Edit Report</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" *hlMenuItem="let menuItem">Mark as Done</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="space-y-9">
+                    <div class="flex items-center">
+                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
+                            <div
+                                class="grid h-9 w-9 place-content-center rounded-full bg-secondary-light text-secondary dark:bg-secondary dark:text-secondary-light"
+                            >
+                                <icon-inbox />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="mb-2 flex font-semibold text-white-dark">
+                                <h6>إجمالي المبيعات</h6>
+                                <p class="ltr:ml-auto rtl:mr-auto"><span>{{totalSalesAmount}} جنية</span></p>
+                            </div>
+                            <div class="h-2 rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
+                                <div class="h-full w-11/12 rounded-full bg-gradient-to-r from-[#7579ff] to-[#b224ef]"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="flex items-center">
+                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
+                            <div class="grid h-9 w-9 place-content-center rounded-full bg-success-light text-success dark:bg-success dark:text-success-light">
+                                <icon-tag />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="mb-2 flex font-semibold text-white-dark">
+                                <h6>Profit</h6>
+                                <p class="ltr:ml-auto rtl:mr-auto">$37,515</p>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
+                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="flex items-center">
+                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
+                            <div class="grid h-9 w-9 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
+                                <icon-credit-card />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="mb-2 flex font-semibold text-white-dark">
+                                <h6>إجمالي المصروفات</h6>
+                                <p class="ltr:ml-auto rtl:mr-auto">{{totlExpenses || 0}} جنية</p>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
+                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#f09819] to-[#ff5858]" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- <div class="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div class="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
@@ -744,5 +743,82 @@
                 </div>
             </div>
         </div> -->
+    </div>
+
+    <div class="panel">
+        <h5 class="text-lg font-semibold">عرض إجمالي المبيعات والمصروفات</h5>
+        <div class="mb-4 max-w-md">
+            <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="filterSummary()"
+                placeholder="ابحث..."
+                class="form-input w-full border rounded px-4 py-2"
+            />
+        </div>
+         <div class="overflow-auto">
+            <table class="min-w-full border border-gray-300 text-right">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('date')">
+                            اليوم
+                            <span *ngIf="sortColumn === 'date'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalSales')">
+                            إجمالي المبيعات
+                            <span *ngIf="sortColumn === 'totalSales'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalReturns')">
+                            إجمالي المرتجعات
+                            <span *ngIf="sortColumn === 'totalReturns'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('totalExpenses')">
+                            إجمالي المصروفات
+                            <span *ngIf="sortColumn === 'totalExpenses'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('netProfit')">
+                            الإجمالي
+                            <span *ngIf="sortColumn === 'netProfit'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('pureNetProfit')">
+                            صافي الربح
+                            <span *ngIf="sortColumn === 'pureNetProfit'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(supplier of filteredSummary; track $index){
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 border">{{ supplier.date | date }}</td>
+                            <td class="px-4 py-2 border">{{ supplier.totalSales }}</td>
+                            <td class="px-4 py-2 border">{{ supplier.totalReturns }}</td>
+                            <td class="px-4 py-2 border">{{ supplier.totalExpenses }}</td>
+                            <td class="px-4 py-2 border">{{ supplier.netProfit }}</td>
+                            <td class="px-4 py-2 border">{{ supplier.pureNetProfit }}</td>
+                        </tr>
+                    }
+
+                    @if(filteredSummary.length === 0){
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500">
+                            لا يوجد مورد مطابق.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

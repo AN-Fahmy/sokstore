@@ -112,6 +112,13 @@
                             </span>
                         </th>
 
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('createdAt')">
+                            التاريخ
+                            <span *ngIf="sortColumn === 'createdAt'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+
                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('productsName')">
                             المنتجات
                             <span *ngIf="sortColumn === 'productsName'">
@@ -138,8 +145,9 @@
                 <tbody>
                     @for(operation of filteredSalesOperations; track $index){
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-2 border">{{ operation.orderId }}</td>
+                            <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 border">{{ operation.clientName }}</td>
+                            <td class="px-4 py-2 border">{{ operation.createdAt | date:'medium' }}</td>
                             <td class="px-4 py-2 border">
                                 @for (product of operation.productsName; track $index) {
                                     <ul>

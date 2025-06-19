@@ -28,6 +28,7 @@ import { SalesOperationsComponent } from './sales-operations/sales-operations.co
 import { SalesReturnComponent } from './sales-return/sales-return.component';
 import { PurchasesOperationsComponent } from './purchases-operations/purchases-operations.component';
 import { PurchasesReturnComponent } from './purchases-return/purchases-return.component';
+import { ExpensesComponent } from './expenses/expenses.component';
 
 const routes: Routes = [
     { path: 'apps/chat', component: ChatComponent, data: { title: 'Chat' } },
@@ -52,6 +53,7 @@ const routes: Routes = [
     { path: 'apps/sales-return', component: SalesReturnComponent, data: { title: 'Sales-Return' } },
     { path: 'apps/purchases-operation', component: PurchasesOperationsComponent, data: { title: 'Purchases-Operation' } },
     { path: 'apps/purchases-return', component: PurchasesReturnComponent, data: { title: 'Purchases-Return' } },
+    { path: 'apps/expenses', component: ExpensesComponent, data: { title: 'Expenses' } },
 ];
 
 @NgModule({

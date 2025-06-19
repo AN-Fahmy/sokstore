@@ -25,6 +25,7 @@
                         "assets": ["src/assets", "src/demo-prepare.html"],
                         "styles": [
                             "./node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+                            "./node_modules/ngx-spinner/animations/ball-clip-rotate-multiple.css",
                             "src/assets/css/app.css"
                         ],
                         "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],

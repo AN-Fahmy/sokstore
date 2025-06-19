@@ -47,6 +47,7 @@
         "ngx-lightbox": "^3.0.0",
         "ngx-quill": "^26.0.5",
         "ngx-scrollbar": "^15.1.2",
+        "ngx-spinner": "^19.0.0",
         "ngx-tippy-wrapper": "^6.1.0",
         "nouislider": "^15.7.1",
         "quill": "^2.0.2",

@@ -2,6 +2,16 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { toggleAnimation } from 'src/app/shared/animations';
 import { DashboardService } from './service/dashboard/dashboard.service';
+import { SalesoperationService } from './service/sales-operation/salesoperation.service';
+
+interface ISummary {
+  date: string;
+  totalSales: number;
+  totalReturns: number;
+  totalExpenses: number;
+  netProfit: number;
+  pureNetProfit: number;
+}
 
 @Component({
     templateUrl: './index.html',
@@ -9,28 +19,53 @@ import { DashboardService } from './service/dashboard/dashboard.service';
 })
 export class IndexComponent implements OnInit{
     private readonly _DashboardService = inject(DashboardService)
+    private readonly _SalesoperationService = inject(SalesoperationService)
 
-    filterNumber:number = 1
+    allSuppliers:any[] = []
     allDataInChart:any[] = []
+    allFilterDateInChart:any[] = []
     allSellingByCategories:any[] = []
+    ordersAmountByDays:any[] = []
+    allSalesOperations:any[] = []
+    totalOrdersAmount:any[] = []
+    allSummaryReport:any[] = []
     totalSalesAmount:number = 0
+    totalSalesAmountToday:number = 0
+    totlExpenses:number = 0
     topCategories:number = 0
+    filterNumber:number = 1
 
     ngOnInit(): void {
-        this.getChartDashboard()
+        this.getChartDashboard(1)
         this.getTopCategorySelling()
+        this.getTotalOrderAmountByDays()
+        this.getAllSalesOerations()
+        this.getSummaryReport()
     }
 
-    getChartDashboard():void{
+    getChartDashboard(filterNum:number):void{
+        this.filterNumber = filterNum
         let data = {
-            filter :this.filterNumber
+            filter : filterNum
         }
         this._DashboardService.ChartDashboard(data).subscribe({
             next:(res)=>{
                 this.allDataInChart = res.data.data
-                this.totalSalesAmount = res.data.totalTodayOrderAmount
+                this.totalSalesAmountToday = res.data.totalTodayOrderAmount
+                this.allFilterDateInChart = this.allDataInChart.map((date:any) => date.period)
                 this.initCharts()
+            }
+        })
+    }
 
+    getTotalOrderAmountByDays():void{
+        let data = {
+            filter : 1
+        }
+        this._DashboardService.ChartDashboard(data).subscribe({
+            next:(res)=>{
+                this.ordersAmountByDays = res.data.data
+                this.initCharts()
             }
         })
     }
@@ -40,14 +75,72 @@ export class IndexComponent implements OnInit{
             next:(res)=>{
                 this.allSellingByCategories = res.data.topCategories
                 this.totalSalesAmount = res.data.totalOrderAmount
-                console.log();
-                console.log(this.allSellingByCategories.map((selling:any)=> selling.totalAmount));
+                this.totlExpenses = res.data.totlExpenses
                 this.initCharts()
-
             }
         })
     }
 
+    getAllSalesOerations():void{
+        this._SalesoperationService.getAllSalesOperations().subscribe({
+            next:(res)=>{
+                this.allSalesOperations = res.data
+            }
+        })
+    }
+
+    getSummaryReport():void{
+        this._DashboardService.SummaryReport().subscribe({
+            next:(res)=>{
+                this.allSummaryReport = res.data
+                this.filteredSummary = [...this.allSummaryReport];
+            }
+        })
+    }
+
+    filteredSummary: ISummary[] = [...this.allSummaryReport];
+    searchTerm: string = '';
+    sortColumn: keyof ISummary = 'date';
+    sortDirection: 'asc' | 'desc' = 'asc';
+
+    filterSummary() {
+        const term = this.searchTerm.trim().toLowerCase();
+        this.filteredSummary = this.allSummaryReport.filter(summary => {
+            return (
+                summary.date.toLowerCase().includes(term) ||
+                summary.totalSales.toLowerCase().includes(term)
+            );
+        });
+
+        this.sort();
+    }
+    sortBy(column: keyof ISummary) {
+        if (this.sortColumn === column) {
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            this.sortColumn = column;
+            this.sortDirection = 'asc';
+        }
+        this.sort();
+    }
+    sort() {
+        this.filteredSummary.sort((a, b) => {
+            const valueA = a[this.sortColumn];
+            const valueB = b[this.sortColumn];
+
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+            return this.sortDirection === 'asc'
+                ? valueA.localeCompare(valueB)
+                : valueB.localeCompare(valueA);
+            }
+
+            if (typeof valueA === 'number' && typeof valueB === 'number') {
+            return this.sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+            }
+
+            return 0;
+        });
+    }
 
     store: any;
     revenueChart: any;
@@ -135,7 +228,7 @@ export class IndexComponent implements OnInit{
                     },
                 ],
             },
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: [...this.allFilterDateInChart],
             xaxis: {
                 axisBorder: {
                     show: false,
@@ -158,7 +251,7 @@ export class IndexComponent implements OnInit{
             yaxis: {
                 labels: {
                     formatter: (value: number) => {
-                        return value + 'K';
+                        return  'جنية ' + value;
                     },
                     offsetX: isRtl ? -30 : -10,
                     offsetY: 0,
@@ -248,7 +341,7 @@ export class IndexComponent implements OnInit{
                 width: 25,
                 colors: isDark ? '#0e1726' : '#fff',
             },
-            colors: isDark ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#5c1ac3', '#e7515a'],
+            colors: isDark ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#5c1ac3', '#e7515a', '#471396'],
             legend: {
                 position: 'bottom',
                 horizontalAlign: 'center',
@@ -351,7 +444,7 @@ export class IndexComponent implements OnInit{
                 labels: {
                     show: false,
                 },
-                categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+                categories: [...this.allFilterDateInChart],
             },
             yaxis: {
                 show: false,
@@ -384,12 +477,12 @@ export class IndexComponent implements OnInit{
             },
             series: [
                 {
-                    name: 'Sales',
-                    data: [44, 55, 41, 67, 22, 43, 21],
+                    name: 'المبيعات',
+                    data: [...this.ordersAmountByDays.map((amount:any)=> amount.totalOrderAmount)],
                 },
                 {
                     name: 'Last Week',
-                    data: [13, 23, 20, 8, 13, 27, 33],
+                    data: [0, 0, 0, 0, 0, 0, 0],
                 },
             ],
         };
@@ -442,7 +535,7 @@ export class IndexComponent implements OnInit{
             series: [
                 {
                     name: 'Sales',
-                    data: [28, 40, 36, 52, 38, 60, 38, 52, 36, 40],
+                    data: [...this.allSalesOperations.map((amount:any)=> amount.totelAmount)],
                 },
             ],
         };

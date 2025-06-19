@@ -13,6 +13,10 @@ export class DashboardService {
         return this._HttpClient.get(`${environment.baseUrl}api/Dashboard/GetTopCategorySelling`)
     }
 
+    SummaryReport():Observable<any>{
+        return this._HttpClient.get(`${environment.baseUrl}api/Dashboard/SummaryReport`)
+    }
+
     ChartDashboard(data:any):Observable<any>{
         return this._HttpClient.post(`${environment.baseUrl}api/Dashboard/ChartDashboard`, data)
     }

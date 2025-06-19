@@ -10,6 +10,7 @@ import { slideDownUp } from '../shared/animations';
     animations: [slideDownUp],
 })
 export class SidebarComponent {
+    role:string | null = localStorage.getItem('role')
     active = false;
     store: any;
     activeDropdown: string[] = [];

@@ -3,7 +3,7 @@
         <div class="h-full bg-white dark:bg-[#0e1726]">
             <div class="flex items-center justify-between px-4 py-3">
                 <a routerLink="/sales-admin/" class="main-logo flex shrink-0 items-center">
-                    <img class="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="" />
+                    <img class="ml-[5px] w-12 flex-none" src="assets/images/logo-sok-2.png" alt="sok store" />
                     <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">Sok Store</span>
                 </a>
                 <a
@@ -40,7 +40,7 @@
                                 <li>
                                     <a routerLink="/sales-admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMobileMenu()">
                                         <!-- {{ 'sales' | translate }} -->
-                                        إحصائيات المبيعات
+                                        الإحصائيات
                                     </a>
                                 </li>
                                 <!-- <li>
@@ -84,6 +84,18 @@
                                         <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             <!-- {{ 'Sales Return' | translate }} -->
                                             مرتجعات المبيعات
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a routerLink="/apps/expenses" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                    <div class="flex items-center">
+                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                        <i class="fa-solid fa-wallet text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
+                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            <!-- {{ 'Sales Return' | translate }} -->
+                                            المصروفات
                                         </span>
                                     </div>
                                 </a>
@@ -174,19 +186,21 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a routerLink="/apps/settings/employee-setting/" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
-                                    <div class="flex items-center">
-                                        <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
-                                        <i class="fa-solid fa-users-gear text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
+                            @if (role == 'Admin') {
+                                <li class="nav-item">
+                                    <a routerLink="/apps/settings/employee-setting/" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
+                                        <div class="flex items-center">
+                                            <!-- <icon-menu-chat class="shrink-0 group-hover:!text-primary" /> -->
+                                            <i class="fa-solid fa-users-gear text-[18px] text-gray-500 shrink-0 group-hover:!text-primary"></i>
 
-                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
-                                            <!-- {{ 'Purchases Return' | translate }} -->
-                                            الموظفين
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
+                                            <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                                <!-- {{ 'Purchases Return' | translate }} -->
+                                                الموظفين
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a routerLink="/apps/settings" class="group" routerLinkActive="active" (click)="toggleMobileMenu()">
                                     <div class="flex items-center">

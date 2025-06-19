@@ -35,16 +35,17 @@ export const routes: Routes = [
     {
         path: '',
         component: AuthLayout,
-        // canActivate:[logedGuard],
+        canActivate:[logedGuard],
         children: [
             // auth
             { path: '', loadChildren: () => import('./auth/auth.module').then((d) => d.AuthModule) },
         ],
     },
+
     {
         path: '',
         component: AppLayout,
-        // canActivate:[authGuard],
+        canActivate:[authGuard],
         children: [
             // dashboard
             { path: '', redirectTo:'sales-admin', pathMatch:'full' },
@@ -90,15 +91,15 @@ export const routes: Routes = [
         ],
     },
 
-    {
-        path: '',
-        component: AuthLayout,
-        children: [
-            // pages
-            { path: '', loadChildren: () => import('./pages/pages.module').then((d) => d.PagesModule) },
+    // {
+    //     path: '',
+    //     component: AuthLayout,
+    //     children: [
+    //         // pages
+    //         { path: '', loadChildren: () => import('./pages/pages.module').then((d) => d.PagesModule) },
 
-            // auth
-            { path: '', loadChildren: () => import('./auth/auth.module').then((d) => d.AuthModule) },
-        ],
-    },
+    //         // auth
+    //         { path: '', loadChildren: () => import('./auth/auth.module').then((d) => d.AuthModule) },
+    //     ],
+    // },
 ];

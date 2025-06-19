@@ -8,7 +8,7 @@ export const logedGuard: CanActivateFn = (route, state) => {
 
     if(isPlatformBrowser(_PLATFORM_ID)){
       if(localStorage.getItem('token') !== null){
-        _Router.navigate(['/auth/boxed-signin'])
+        _Router.navigate(['/apps/settings'])
         return false
       } else {
         return true

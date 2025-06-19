@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpBackend, HttpClient, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 //Routes
@@ -60,6 +60,8 @@ import { FooterComponent } from './layouts/footer';
 import { SidebarComponent } from './layouts/sidebar';
 import { ThemeCustomizerComponent } from './layouts/theme-customizer';
 import { headerInterceptor } from './interceptors/header/header.interceptor';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { loadingInterceptor } from 'src/interceptors/loading/loading.interceptor';
 
 @NgModule({
     imports: [
@@ -69,6 +71,7 @@ import { headerInterceptor } from './interceptors/header/header.interceptor';
         CommonModule,
         FormsModule,
         HttpClientModule,
+        NgxSpinnerModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -102,8 +105,9 @@ import { headerInterceptor } from './interceptors/header/header.interceptor';
 
     providers: [
         Title,
-        provideHttpClient(withInterceptors([headerInterceptor]))
+        provideHttpClient(withFetch(), withInterceptors([headerInterceptor, loadingInterceptor]))
     ],
     bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}
