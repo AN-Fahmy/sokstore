@@ -31,7 +31,7 @@ export class IndexComponent implements OnInit{
     allSummaryReport:any[] = []
     totalSalesAmount:number = 0
     totalSalesAmountToday:number = 0
-    totlExpenses:number = 0
+    totalExpenses:number = 0
     topCategories:number = 0
     filterNumber:number = 1
 
@@ -65,6 +65,8 @@ export class IndexComponent implements OnInit{
         this._DashboardService.ChartDashboard(data).subscribe({
             next:(res)=>{
                 this.ordersAmountByDays = res.data.data
+                console.log(this.ordersAmountByDays);
+
                 this.initCharts()
             }
         })
@@ -75,7 +77,7 @@ export class IndexComponent implements OnInit{
             next:(res)=>{
                 this.allSellingByCategories = res.data.topCategories
                 this.totalSalesAmount = res.data.totalOrderAmount
-                this.totlExpenses = res.data.totlExpenses
+                this.totalExpenses = res.data.totlExpenses
                 this.initCharts()
             }
         })
@@ -417,11 +419,11 @@ export class IndexComponent implements OnInit{
                 toolbar: {
                     show: false,
                 },
-                stacked: true,
-                stackType: '100%',
+                // stacked: true,
+                // stackType: '100%',
             },
             dataLabels: {
-                enabled: false,
+                enabled: true,
             },
             stroke: {
                 show: true,
@@ -479,11 +481,11 @@ export class IndexComponent implements OnInit{
                 {
                     name: 'المبيعات',
                     data: [...this.ordersAmountByDays.map((amount:any)=> amount.totalOrderAmount)],
-                },
-                {
-                    name: 'Last Week',
-                    data: [0, 0, 0, 0, 0, 0, 0],
-                },
+                }
+                // {
+                //     name: 'Last Week',
+                //     data: [...this.ordersAmountByDays.map((amount:any)=> amount.totalOrderAmount)],
+                // },
             ],
         };
 
@@ -540,4 +542,46 @@ export class IndexComponent implements OnInit{
             ],
         };
     }
+
+    // القيم القصوى للمقارنة
+    maxSalesAmount = 2000;
+    maxExpensesAmount = 2000;
+
+    // نسبة المبيعات
+    get salesProgressPercent(): string {
+        const percent = (this.totalSalesAmount / this.maxSalesAmount) * 100;
+        return percent > 100 ? '100%' : percent.toFixed(1) + '%';
+    }
+
+    // لون شريط المبيعات حسب النسبة
+    get salesBarColor(): string {
+        const percent = (this.totalSalesAmount / this.maxSalesAmount) * 100;
+        if (percent < 30) return 'bg-green-500';
+        if (percent < 70) return 'bg-yellow-500';
+        return 'bg-red-500';
+    }
+
+    // get salesPercentText(): string {
+    //     const percent = (this.totalSalesAmount / this.maxSalesAmount) * 100;
+    //     return percent > 100 ? '100%' : percent.toFixed(0) + '%';
+    // }
+
+    // نسبة المصروفات
+    get expensesProgressPercent(): string {
+        const percent = (this.totalExpenses / this.maxExpensesAmount) * 100;
+        return percent > 100 ? '100%' : percent.toFixed(1) + '%';
+        }
+
+    // لون شريط المصروفات حسب النسبة
+    get expensesBarColor(): string {
+        const percent = (this.totalExpenses / this.maxExpensesAmount) * 100;
+        if (percent < 30) return 'bg-green-500';
+        if (percent < 70) return 'bg-yellow-500';
+        return 'bg-red-500';
+    }
+
+    // get expensesPercentText(): string {
+    //     const percent = (this.totalExpenses / this.maxExpensesAmount) * 100;
+    //     return percent > 100 ? '100%' : percent.toFixed(0) + '%';
+    // }
 }

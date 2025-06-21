@@ -130,7 +130,7 @@
                     </div>
                     <h5 class="text-2xl font-semibold ltr:text-right rtl:text-left dark:text-white-light">
                         {{allSalesOperations.length}}
-                        <span class="block text-sm font-normal">إجمالي الطلبات</span>
+                        <span class="block text-sm font-normal">إجمالي عدد المبيعات</span>
                     </h5>
                 </div>
                 <div class="overflow-hidden">
@@ -187,13 +187,41 @@
                         <div class="flex-1">
                             <div class="mb-2 flex font-semibold text-white-dark">
                                 <h6>إجمالي المبيعات</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto"><span>{{totalSalesAmount}} جنية</span></p>
-                            </div>
-                            <div class="h-2 rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-11/12 rounded-full bg-gradient-to-r from-[#7579ff] to-[#b224ef]"></div>
+                                <p class="ltr:ml-auto rtl:mr-auto"><span>{{ totalSalesAmount || 0 }} جنيه</span></p>
+                                </div>
+
+                                <div class="relative h-4 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b] overflow-hidden">
+                                <div
+                                    class="h-full transition-all duration-700 rounded-full"
+                                    [ngClass]="salesBarColor"
+                                    [style.width]="salesProgressPercent"
+                                ></div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="flex items-center">
+                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
+                            <div class="grid h-9 w-9 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
+                                <icon-credit-card />
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="mb-2 flex font-semibold text-white-dark">
+                                <h6>إجمالي المصروفات</h6>
+                                <p class="ltr:ml-auto rtl:mr-auto">{{ totalExpenses || 0 }} جنيه</p>
+                                </div>
+
+                                <div class="relative h-4 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b] overflow-hidden">
+                                <div
+                                    class="h-full transition-all duration-700 rounded-full"
+                                    [ngClass]="expensesBarColor"
+                                    [style.width]="expensesProgressPercent"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- <div class="flex items-center">
                         <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
                             <div class="grid h-9 w-9 place-content-center rounded-full bg-success-light text-success dark:bg-success dark:text-success-light">
@@ -210,22 +238,7 @@
                             </div>
                         </div>
                     </div> -->
-                    <div class="flex items-center">
-                        <div class="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                            <div class="grid h-9 w-9 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-                                <icon-credit-card />
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex font-semibold text-white-dark">
-                                <h6>إجمالي المصروفات</h6>
-                                <p class="ltr:ml-auto rtl:mr-auto">{{totlExpenses || 0}} جنية</p>
-                            </div>
-                            <div class="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                <div class="h-full w-full rounded-full bg-gradient-to-r from-[#f09819] to-[#ff5858]" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

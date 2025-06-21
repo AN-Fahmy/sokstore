@@ -45,7 +45,7 @@ export class ClientSettingComponent implements OnInit{
         fullName:[''],
         mobile:[''],
         address:[''],
-        roleId:['2d01063b-1439-462a-9b3b-9b60a777719c']
+        roleId:['f24a8661-fcaf-451e-8c99-6d91a33b96d6']
     })
 
     submitClientForm():void{
@@ -57,7 +57,7 @@ export class ClientSettingComponent implements OnInit{
                     icon: "success",
                 })
                 this.clientForm.reset()
-                this.clientForm.get('roleId')?.setValue('2d01063b-1439-462a-9b3b-9b60a777719c')
+                this.clientForm.get('roleId')?.setValue('f24a8661-fcaf-451e-8c99-6d91a33b96d6')
                 this.getAllClients()
             }
         })

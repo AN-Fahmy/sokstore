@@ -49,7 +49,7 @@ export class EmployeeSettingComponent implements OnInit {
         address: [''],
         username: [''],
         password: [''],
-        roleId: ['9ac8f100-4613-4c66-99d5-c29da5dc6993'],
+        roleId: ['defae231-46fe-4deb-ba49-903c6578e1a6'],
     })
 
     submitEmployeeForm():void{
@@ -61,7 +61,7 @@ export class EmployeeSettingComponent implements OnInit {
                     icon: "success",
                 })
                 this.employeeForm.reset()
-                this.employeeForm.get('roleId')?.setValue('9ac8f100-4613-4c66-99d5-c29da5dc6993')
+                this.employeeForm.get('roleId')?.setValue('defae231-46fe-4deb-ba49-903c6578e1a6')
                 this.getAllEmployee()
             }
         })

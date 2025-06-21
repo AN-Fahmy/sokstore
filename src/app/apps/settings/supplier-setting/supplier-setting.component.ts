@@ -45,7 +45,7 @@ export class SupplierSettingComponent implements OnInit{
         fullName:[''],
         mobile:[''],
         address:[''],
-        roleId: ['cf98e740-9544-426f-a0a8-852255b6a340']
+        roleId: ['19b072e0-41f5-49ec-ae0e-6c8c530ca646']
     })
 
     submitSupplierForm():void{
@@ -57,7 +57,7 @@ export class SupplierSettingComponent implements OnInit{
                     icon: "success",
                 })
                 this.supplierForm.reset()
-                this.supplierForm.get('roleId')?.setValue('cf98e740-9544-426f-a0a8-852255b6a340')
+                this.supplierForm.get('roleId')?.setValue('19b072e0-41f5-49ec-ae0e-6c8c530ca646')
                 this.getAllSuppliers()
             }
         })
