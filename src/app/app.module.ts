@@ -62,6 +62,7 @@ import { ThemeCustomizerComponent } from './layouts/theme-customizer';
 import { headerInterceptor } from './interceptors/header/header.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { loadingInterceptor } from 'src/interceptors/loading/loading.interceptor';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
     imports: [
@@ -72,6 +73,7 @@ import { loadingInterceptor } from 'src/interceptors/loading/loading.interceptor
         FormsModule,
         HttpClientModule,
         NgxSpinnerModule,
+        NgxPaginationModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

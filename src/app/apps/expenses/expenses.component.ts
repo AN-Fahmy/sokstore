@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { ExpensesService } from 'src/app/service/expenses/expenses.service';
 import { SupplierService } from 'src/app/service/supplier/supplier.service';
 import Swal from 'sweetalert2';
@@ -15,7 +16,7 @@ interface IExpenses {
 @Component({
   selector: 'app-expenses',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.css'
 })
@@ -24,6 +25,8 @@ export class ExpensesComponent {
     private readonly _ExpensesService = inject(ExpensesService)
     private readonly _SupplierService = inject(SupplierService)
 
+    p: number = 1;
+    totalItem:number = 0
     allExpenses:any[] = []
     allSuppliers:any[] = []
     expenseId:string = ''
@@ -47,6 +50,7 @@ export class ExpensesComponent {
             next:(res)=>{
                 this.allExpenses = res.data
                 this.filteredExpenses = [...this.allExpenses]
+                this.totalItem = this.allExpenses.length
             }
         })
     }

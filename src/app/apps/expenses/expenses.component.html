@@ -54,15 +54,15 @@
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
-                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('details')">
-                            تفاصيل المصروفات
-                            <span *ngIf="sortColumn === 'details'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                        </th>
                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('supplierName')">
                             المورد
                             <span *ngIf="sortColumn === 'supplierName'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('details')">
+                            تفاصيل المصروفات
+                            <span *ngIf="sortColumn === 'details'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
@@ -70,11 +70,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(expense of filteredExpenses; track $index){
+                    @for(expense of filteredExpenses | paginate: { id: 'foo', itemsPerPage: 10, currentPage: p, totalItems: totalItem }; track $index){
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-2 border">{{ expense.amount }}</td>
-                            <td class="px-4 py-2 border">{{ expense.details }}</td>
                             <td class="px-4 py-2 border">{{ expense.supplierName }}</td>
+                            <td class="px-4 py-2 border">{{ expense.details }}</td>
                             <td class="px-4 py-2 border">
                                <div class="flex justify-center items-center gap-3">
                                     <button class="text-blue-600 hover:underline" (click)="patchExpenseData(expense)">
@@ -97,6 +97,10 @@
                     }
                 </tbody>
             </table>
+
+            <div class="flex justify-center items-center mt-3">
+                <pagination-controls (pageChange)="p = $event" id="foo" ></pagination-controls>
+            </div>
         </div>
     </div>
 </section>

@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { InventoryService } from 'src/app/service/inventory/inventory.service';
 import { UsersService } from 'src/app/service/users/users.service';
 import Swal from 'sweetalert2';
@@ -17,7 +18,7 @@ interface Iinventory {
 @Component({
   selector: 'app-inventory-setting',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './inventory-setting.component.html',
   styleUrl: './inventory-setting.component.css'
 })
@@ -25,93 +26,95 @@ export class InventorySettingComponent implements OnInit{
         private readonly _FormBuilder = inject(FormBuilder)
         private readonly _InventoryService = inject(InventoryService)
         private readonly _UsersService = inject(UsersService)
+    p: number = 1;
+    totalItem:number = 0
+    allInventories:any[] = []
+    allUsers:any[] = []
+    inventoryId:string = ''
+    employeeId:string = ''
+    update:boolean = false
 
-        allInventories:any[] = []
-        allUsers:any[] = []
-        inventoryId:string = ''
-        employeeId:string = ''
-        update:boolean = false
-
-        ngOnInit(): void {
-            this.getAllInventories()
-            this.getAllUsers()
-        }
-        getAllUsers():void{
-            this._UsersService.getAllEmployeeAndAdmin().subscribe({
-                next:(res)=>{
-                    this.allUsers = res.data
-                }
-            })
-        }
-
-        getAllInventories():void{
-            this._InventoryService.getAllWarehouses().subscribe({
-                next:(res)=>{
-                    this.allInventories = res.data
-                    this.filteredInventories = [...this.allInventories]
-                }
-            })
-        }
-
-        selectEmployeeId(event:Event){
-            let selectId = (event.target as HTMLSelectElement).value
-            this.employeeId = selectId
-        }
-
-        inventoryForm:FormGroup = this._FormBuilder.group({
-            name: [''],
-            userId: [''],
-            address: [''],
+    ngOnInit(): void {
+        this.getAllInventories()
+        this.getAllUsers()
+    }
+    getAllUsers():void{
+        this._UsersService.getAllEmployeeAndAdmin().subscribe({
+            next:(res)=>{
+                this.allUsers = res.data
+            }
         })
+    }
 
-        submitinventoryForm():void{
-            let data = this.inventoryForm.value
-            this._InventoryService.createWarehouse(data).subscribe({
-                next:(res)=>{
-                    Swal.fire({
-                        title: "تم إضافة مخزن بنجاح",
-                        icon: "success",
-                    })
-                    this.inventoryForm.reset()
-                    this.getAllInventories()
-                }
-            })
-        }
+    getAllInventories():void{
+        this._InventoryService.getAllWarehouses().subscribe({
+            next:(res)=>{
+                this.allInventories = res.data
+                this.filteredInventories = [...this.allInventories]
+                this.totalItem = this.allInventories.length
+            }
+        })
+    }
 
-        deleteInventory(id:number):void{
-            this._InventoryService.deleteWarehouse(id).subscribe({
-                next:(res)=>{
-                    Swal.fire({
-                        title: "تم حذف المخزن بنجاح",
-                        icon: "success",
-                    })
-                    this.getAllInventories()
-                }
-            })
-        }
+    selectEmployeeId(event:Event){
+        let selectId = (event.target as HTMLSelectElement).value
+        this.employeeId = selectId
+    }
 
-        pathInventoryData(inventory:any):void{
-            this.inventoryId = inventory.id
-            this.inventoryForm.patchValue(inventory)
-            this.update = true
-        }
+    inventoryForm:FormGroup = this._FormBuilder.group({
+        name: [''],
+        userId: [''],
+        address: [''],
+    })
 
-        updateInventory():void{
-            let data = this.inventoryForm.value
-            data.id = this.inventoryId
-            data.userId = this.employeeId
-            this._InventoryService.updateWarehouse(this.inventoryId, data).subscribe({
-                next:(res)=>{
-                    this.update = false
-                    Swal.fire({
-                        title: "تم تعديل المخزن بنجاح",
-                        icon: "success",
-                    })
-                    this.inventoryForm.reset()
-                    this.getAllInventories()
-                }
-            })
-        }
+    submitinventoryForm():void{
+        let data = this.inventoryForm.value
+        this._InventoryService.createWarehouse(data).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم إضافة مخزن بنجاح",
+                    icon: "success",
+                })
+                this.inventoryForm.reset()
+                this.getAllInventories()
+            }
+        })
+    }
+
+    deleteInventory(id:number):void{
+        this._InventoryService.deleteWarehouse(id).subscribe({
+            next:(res)=>{
+                Swal.fire({
+                    title: "تم حذف المخزن بنجاح",
+                    icon: "success",
+                })
+                this.getAllInventories()
+            }
+        })
+    }
+
+    pathInventoryData(inventory:any):void{
+        this.inventoryId = inventory.id
+        this.inventoryForm.patchValue(inventory)
+        this.update = true
+    }
+
+    updateInventory():void{
+        let data = this.inventoryForm.value
+        data.id = this.inventoryId
+        data.userId = this.employeeId
+        this._InventoryService.updateWarehouse(this.inventoryId, data).subscribe({
+            next:(res)=>{
+                this.update = false
+                Swal.fire({
+                    title: "تم تعديل المخزن بنجاح",
+                    icon: "success",
+                })
+                this.inventoryForm.reset()
+                this.getAllInventories()
+            }
+        })
+    }
 
     filteredInventories: Iinventory[] = [...this.allInventories];
     searchTerm: string = '';

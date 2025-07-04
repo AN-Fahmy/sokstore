@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { CategoryService } from 'src/app/service/category/category.service';
 import { InventoryService } from 'src/app/service/inventory/inventory.service';
 import { ProductService } from 'src/app/service/product/product.service';
@@ -21,7 +22,7 @@ interface IProduct {
 @Component({
   selector: 'app-product-setting',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './product-setting.component.html',
   styleUrl: './product-setting.component.css'
 })
@@ -31,6 +32,8 @@ export class ProductSettingComponent {
     private readonly _InventoryService = inject(InventoryService)
     private readonly _CategoryService = inject(CategoryService)
 
+    p: number = 1;
+    totalItem:number = 0
     allProducts:any[] = []
     allCategories:any[] = []
     allInventories:any[] = []
@@ -69,6 +72,7 @@ export class ProductSettingComponent {
                 this.filteredProducts = [...this.allProducts]
                 this.totalProfit = this.allProducts.map((x)=> x.sellingPrice * x.quantity).reduce((acc, curr)=> acc + curr, 0)
                 this.totalCapital = this.allProducts.map((x)=> x.purchasePrice * x.quantity).reduce((acc, curr)=> acc + curr, 0)
+                this.totalItem = this.allProducts.length
             }
         })
     }

@@ -1,6 +1,7 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { SupplierService } from 'src/app/service/supplier/supplier.service';
 import Swal from 'sweetalert2';
@@ -15,7 +16,7 @@ interface ISupplier {
 @Component({
   selector: 'app-supplier-setting',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './supplier-setting.component.html',
   styleUrl: './supplier-setting.component.css'
 })
@@ -24,6 +25,8 @@ export class SupplierSettingComponent implements OnInit{
     private readonly _AuthService = inject(AuthService)
     private readonly _SupplierService = inject(SupplierService)
 
+    p: number = 1;
+    totalItem:number = 0
     allSuppliers:any[] = []
     supplierId:string = ''
     update:boolean = false
@@ -37,6 +40,7 @@ export class SupplierSettingComponent implements OnInit{
             next:(res)=>{
                 this.allSuppliers = res.data
                 this.filteredSuppliers = [...this.allSuppliers]
+                this.totalItem = this.allSuppliers.length
             }
         })
     }

@@ -59,7 +59,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @for (category of filteredCategories; track $index) {
+                    @for (category of filteredCategories | paginate: { id: 'foo', itemsPerPage: 10, currentPage: p, totalItems: totalItem }; track $index) {
                          <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 border">{{ category.name }}</td>
@@ -83,6 +83,10 @@
                 </tr>
                 </tbody>
             </table>
+
+            <div class="flex justify-center items-center mt-3">
+                <pagination-controls (pageChange)="p = $event" id="foo" ></pagination-controls>
+            </div>
         </div>
     </div>
 </section>

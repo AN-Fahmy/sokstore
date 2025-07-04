@@ -1,6 +1,7 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { CategoryService } from 'src/app/service/category/category.service';
 import Swal from 'sweetalert2';
 
@@ -12,7 +13,7 @@ interface Category {
 @Component({
   selector: 'app-category-setting',
   standalone: true,
-  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule],
+  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './category-setting.component.html',
   styleUrl: './category-setting.component.css'
 })
@@ -20,6 +21,8 @@ export class CategorySettingComponent {
     private readonly _FormBuilder = inject(FormBuilder)
     private readonly _CategoryService = inject(CategoryService)
 
+    p: number = 1;
+    totalItem:number = 0
     allCategories:any[] = []
     categoryId:string = ''
     update:boolean = false
@@ -32,6 +35,7 @@ export class CategorySettingComponent {
             next:(res)=>{
                 this.allCategories = res.data
                 this.filteredCategories = [...this.allCategories]
+                this.totalItem = this.allCategories.length
             }
         })
     }

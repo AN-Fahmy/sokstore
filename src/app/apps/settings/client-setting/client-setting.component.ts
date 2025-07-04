@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClientService } from 'src/app/service/client/client.service';
 import Swal from 'sweetalert2';
@@ -15,7 +16,7 @@ interface IClient {
 @Component({
   selector: 'app-client-setting',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './client-setting.component.html',
   styleUrl: './client-setting.component.css'
 })
@@ -24,6 +25,8 @@ export class ClientSettingComponent implements OnInit{
     private readonly _AuthService = inject(AuthService)
     private readonly _ClientService = inject(ClientService)
 
+    p: number = 1;
+    totalItem:number = 0
     allClients:any[] = []
     clientId:string = ''
     update:boolean = false
@@ -37,6 +40,7 @@ export class ClientSettingComponent implements OnInit{
             next:(res)=>{
                 this.allClients = res.data
                 this.filteredClients = [...this.allClients]
+                this.totalItem = this.allClients.length
             }
         })
     }

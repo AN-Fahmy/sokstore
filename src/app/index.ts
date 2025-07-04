@@ -34,6 +34,8 @@ export class IndexComponent implements OnInit{
     totalExpenses:number = 0
     topCategories:number = 0
     filterNumber:number = 1
+    p: number = 1;
+    totalItem:number = 0
 
     ngOnInit(): void {
         this.getChartDashboard(1)
@@ -96,6 +98,7 @@ export class IndexComponent implements OnInit{
             next:(res)=>{
                 this.allSummaryReport = res.data
                 this.filteredSummary = [...this.allSummaryReport];
+                this.totalItem = this.allSummaryReport.length
             }
         })
     }

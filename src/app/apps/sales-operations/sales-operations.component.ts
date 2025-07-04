@@ -1,9 +1,11 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxCustomModalComponent } from 'ngx-custom-modal';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { ClientService } from 'src/app/service/client/client.service';
+import { DashboardService } from 'src/app/service/dashboard/dashboard.service';
 import { ProductService } from 'src/app/service/product/product.service';
 import { SalesoperationService } from 'src/app/service/sales-operation/salesoperation.service';
 import Swal from 'sweetalert2';
@@ -22,7 +24,7 @@ interface ISalesOperation {
 @Component({
   selector: 'app-sales-operations',
   standalone: true,
-  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent, DatePipe],
+  imports: [FormsModule, NgIf, NgSelectModule, ReactiveFormsModule, NgFor, NgxCustomModalComponent, DatePipe, NgxPaginationModule],
   templateUrl: './sales-operations.component.html',
   styleUrl: './sales-operations.component.css',
 })
@@ -31,17 +33,23 @@ export class SalesOperationsComponent implements OnInit{
     private readonly _SalesoperationService = inject(SalesoperationService)
     private readonly _ClientService = inject(ClientService)
     private readonly _ProductService = inject(ProductService)
+    private readonly _DashboardService = inject(DashboardService)
 
+    p: number = 1;
+    totalItem:number = 0
     allSalesOperations:any[] = []
     allClients:any[] = []
     allProducts:any[] = []
     saleOperationById:any = {}
     totalProfit:number = 0
+    totalSalesAmountToday:number = 0
+
     ngOnInit(): void {
         this.getAllSalesOperations()
         this.getAllClients()
         this.getAllProducts()
         this.addProduct()
+        this.getSalesAAmountToday()
         this.salesOperationFrom.get('discount')?.valueChanges.subscribe(() => {
             this.calculateTotelAmount();
         });
@@ -53,8 +61,7 @@ export class SalesOperationsComponent implements OnInit{
                 this.allSalesOperations = res.data
                 this.filteredSalesOperations = [...this.allSalesOperations]
                 this.totalProfit = this.allSalesOperations.map((x)=> x.totelAmount).reduce((acc, curr)=> acc + curr, 0)
-                console.log(this.totalProfit);
-
+                this.totalItem = this.allSalesOperations.length
             }
         })
     }
@@ -79,6 +86,17 @@ export class SalesOperationsComponent implements OnInit{
         this._SalesoperationService.getSaleOperationById(id).subscribe({
             next:(res)=>{
                 this.saleOperationById = res.data
+            }
+        })
+    }
+
+    getSalesAAmountToday():void{
+        let data = {
+            filter : 1
+        }
+        this._DashboardService.ChartDashboard(data).subscribe({
+            next:(res)=>{
+                this.totalSalesAmountToday = res.data.totalTodayOrderAmount
             }
         })
     }

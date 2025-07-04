@@ -145,7 +145,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(product of filteredProducts; track $index){
+                    @for(product of filteredProducts | paginate: { id: 'foo', itemsPerPage: 25, currentPage: p, totalItems: totalItem }; track $index){
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-2 border">{{ product.warehouseName }}</td>
                             <td class="px-4 py-2 border">{{ product.name }}</td>
@@ -179,6 +179,10 @@
                     }
                 </tbody>
             </table>
+
+            <div class="flex justify-center items-center mt-3">
+                <pagination-controls (pageChange)="p = $event" id="foo" ></pagination-controls>
+            </div>
         </div>
     </div>
 </section>

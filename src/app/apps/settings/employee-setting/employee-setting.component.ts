@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { EmployeeService } from 'src/app/service/employee/employee.service';
 import Swal from 'sweetalert2';
@@ -18,7 +19,7 @@ interface IEmployee {
 @Component({
   selector: 'app-employee-setting',
   standalone: true,
-  imports: [FormsModule, NgIf, ReactiveFormsModule],
+  imports: [FormsModule, NgIf, ReactiveFormsModule, NgxPaginationModule],
   templateUrl: './employee-setting.component.html',
   styleUrl: './employee-setting.component.css'
 })
@@ -27,6 +28,8 @@ export class EmployeeSettingComponent implements OnInit {
     private readonly _AuthService = inject(AuthService)
     private readonly _EmployeeService = inject(EmployeeService)
 
+    p: number = 1;
+    totalItem:number = 0
     allEmpolyees:any[] = []
     employeeId:string = ''
     update:boolean = false
@@ -39,6 +42,7 @@ export class EmployeeSettingComponent implements OnInit {
             next:(res)=>{
                 this.allEmpolyees = res.data
                 this.filteredEmployees = [...this.allEmpolyees]
+                this.totalItem = this.allEmpolyees.length
             }
         })
     }
