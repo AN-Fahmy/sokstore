@@ -812,7 +812,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(supplier of filteredSummary; track $index){
+                    @for(supplier of filteredSummary.reverse(); track $index){
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-2 border">{{ supplier.date | date }}</td>
                             <td class="px-4 py-2 border">{{ supplier.totalSales }} جنية</td>

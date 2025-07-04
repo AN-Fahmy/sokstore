@@ -36,7 +36,7 @@ export class SalesOperationsComponent implements OnInit{
     allClients:any[] = []
     allProducts:any[] = []
     saleOperationById:any = {}
-
+    totalProfit:number = 0
     ngOnInit(): void {
         this.getAllSalesOperations()
         this.getAllClients()
@@ -52,6 +52,9 @@ export class SalesOperationsComponent implements OnInit{
             next:(res)=>{
                 this.allSalesOperations = res.data
                 this.filteredSalesOperations = [...this.allSalesOperations]
+                this.totalProfit = this.allSalesOperations.map((x)=> x.totelAmount).reduce((acc, curr)=> acc + curr, 0)
+                console.log(this.totalProfit);
+
             }
         })
     }

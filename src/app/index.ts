@@ -544,8 +544,8 @@ export class IndexComponent implements OnInit{
     }
 
     // القيم القصوى للمقارنة
-    maxSalesAmount = 2000;
-    maxExpensesAmount = 2000;
+    maxSalesAmount = 10000;
+    maxExpensesAmount = 10000;
 
     // نسبة المبيعات
     get salesProgressPercent(): string {
