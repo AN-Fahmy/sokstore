@@ -75,6 +75,10 @@
             />
         </div>
 
+        <div class="mb-4 max-w-md">
+            <h3 class="text-[20px]">إجمالي الربح : <span class="font-bold">{{totalProfit}} جنية</span> </h3>
+        </div>
+
         <div class="overflow-auto">
             <table class="min-w-full border border-gray-300 text-right">
                 <thead class="bg-gray-100">
@@ -121,6 +125,9 @@
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
+                        <th class="px-4 py-2 border cursor-pointer">
+                            الإجمالي
+                        </th>
                         <th class="px-4 py-2 border cursor-pointer" (click)="sortBy('description')">
                             التفاصيل
                             <span *ngIf="sortColumn === 'description'">
@@ -141,6 +148,7 @@
                             <td class="px-4 py-2 border">{{ product.purchasePrice }} جنية</td>
                             <td class="px-4 py-2 border">{{ product.sellingPrice }} جنية</td>
                             <td class="px-4 py-2 border">{{ product.quantity }}</td>
+                            <td class="px-4 py-2 border">{{ product.quantity * product.sellingPrice}} جنية</td>
                             <td class="px-4 py-2 border">{{ product.description }}</td>
                             <td class="px-4 py-2 border">
                                <div class="flex justify-center items-center gap-3">
