@@ -37,6 +37,7 @@ export class ProductSettingComponent {
     productId:string = ''
     clientId:string = ''
     totalProfit:number = 0
+    totalCapital:number = 0
     update:boolean = false
 
     ngOnInit(): void {
@@ -67,6 +68,7 @@ export class ProductSettingComponent {
                 this.allProducts = res.data
                 this.filteredProducts = [...this.allProducts]
                 this.totalProfit = this.allProducts.map((x)=> x.sellingPrice * x.quantity).reduce((acc, curr)=> acc + curr, 0)
+                this.totalCapital = this.allProducts.map((x)=> x.purchasePrice * x.quantity).reduce((acc, curr)=> acc + curr, 0)
             }
         })
     }
